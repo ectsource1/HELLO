@@ -21,7 +21,7 @@
         <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
             <TextBlock Text="ECT" TextWrapping="NoWrap" Foreground="#FFFFFF" FontSize="36" Opacity="0.85"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="40" Width="75" TextAlignment="Left" FontWeight="Bold" />
             <TextBlock Text="艾琳国际英语培训学校" TextWrapping="NoWrap" Foreground="#8B008B" FontSize="36" Opacity="0.85" Height="40" TextAlignment="Left" FontWeight="Bold" Width="525"/>
-
+            <TextBlock Text="{Binding Status}" TextWrapping="NoWrap" />
             
         </StackPanel>
 

@@ -77,6 +77,7 @@ namespace SpeechTTS.ViewModels
 
         private void Login(object control)
         {
+            Status = "";
             PasswordBox passwordBox = control as PasswordBox;
             string clearTextPassword = passwordBox.Password;
             try
@@ -87,8 +88,8 @@ namespace SpeechTTS.ViewModels
 
                 if (user.Id == -1)
                 {
-                    MessageBox.Show(user.Name + "\n" +
-                                    user.Macid);
+                    MessageBox.Show(user.Name + "\n" + user.Macid);
+                    Status = "Invalid Account";
                     return;
                 }
 

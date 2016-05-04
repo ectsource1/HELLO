@@ -75,9 +75,7 @@ namespace SpeechTTS.Auth
             WebClient client = new WebClient();
             string url = string.Format("http://www.ectedu.com/api2.php/students/{0}", id);
             string value = client.DownloadString(url);
-            //string value = client.OpenRead(url);
             json = value;
-            //User user = new JavaScriptSerializer().Deserialize<User>(json);
             dynamic d = JsonConvert.DeserializeObject<dynamic>(json);
             string macid = GetMACAddress();
             User user = new User();
