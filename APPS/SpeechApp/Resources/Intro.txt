@@ -1,0 +1,21 @@
+A Text-To-Speech (TTS) synthesizer is a computer-based system that should be able to read any text aloud, 
+whether it was directly introduced in the computer by an operator or scanned and submitted to an Optical 
+Character Recognition (OCR) system. Let us try to be clear. There is a fundamental difference between 
+the system we are about to discuss here and any other talking machine (as a cassette-player for example) 
+in the sense that we are interested in the automatic production of new sentences. This definition still 
+needs some refinements. Systems that simply concatenate isolated words or parts of sentences, denoted 
+as Voice Response Systems, are only applicable when a limited vocabulary is required 
+(typically a few one hundreds of words), and when the sentences to be pronounced respect a 
+very restricted structure, as is the case for the announcement of arrivals in train stations for instance. 
+In the context of TTS synthesis, it is impossible (and luckily useless) to record and store all the words 
+of the language. It is thus more suitable to define Text-To-Speech as the automatic production of speech, 
+through a grapheme-to-phoneme transcription of the sentences to utter.
+
+At first sight, this task does not look too hard to perform. After all, is not the human being potentially 
+able to correctly pronounce an unknown sentence, even from his childhood ? We all have, mainly unconsciously, 
+a deep knowledge of the reading rules of our mother tongue. They were transmitted to us, in a simplified form, 
+at primary school, and we improved them year after year. However, it would be a bold claim indeed to say that 
+it is only a short step before the computer is likely to equal the human being in that respect. 
+Despite the present state of our knowledge and techniques and the progress recently accomplished in the fields of 
+Signal Processing and Artificial Intelligence, we would have to express some reservations. As a matter of fact, 
+the reading process draws from the furthest depths, often unthought of, of the human intelligence.
