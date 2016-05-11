@@ -27,5 +27,14 @@ namespace SpeechTTS.Model
         void SaveCardsDocuments();
         void AddCardsDocument(TextDocument doc);
         void RemoveCardsDocument(TextDocument doc);
+
+        IAsyncResult BeginGetActivitiesDocuments(AsyncCallback callback, object userState);
+        IEnumerable<TextDocument> EndGetActivitiesDocuments(IAsyncResult result);
+        IAsyncResult BeginSendActivitiesDocument(TextDocument email, AsyncCallback callback, object userState);
+        void EndSendActivitiesDocument(IAsyncResult result);
+        TextDocument GetActivitiesDocument(Guid id);
+        void SaveActivitiesDocuments();
+        void AddActivitiesDocument(TextDocument doc);
+        void RemoveActivitiesDocument(TextDocument doc);
     }
 }

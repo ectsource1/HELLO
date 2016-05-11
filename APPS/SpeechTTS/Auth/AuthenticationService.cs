@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Text;
-using System.Web.Script.Serialization;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.ComponentModel.Composition;
@@ -13,8 +11,9 @@ namespace SpeechTTS.Auth
 {
     public interface IAuthenticationService
     {
-        //User AuthenticateUser(string username, string password);
-        User AuthenticateUser(int id, string password);
+        void UpdatePasswd(int id, string pw);
+        User AuthorizeComputer(int id, string pw);
+        User AuthenticateUser(int id, string pw);
     }
 
     [Export(typeof(IAuthenticationService))]
@@ -55,55 +54,39 @@ namespace SpeechTTS.Auth
             }
         }
 
-        private static readonly List<InternalUserData> _users = new List<InternalUserData>()
-        {
-            new InternalUserData("Mark", "mark@company.com",
-            "MB5PYIsbI2YzCUe34Q5ZU2VferIoI4Ttd+ydolWV0OE=", new string[] { "Administrators" }),
-            new InternalUserData("John", "john@company.com",
-            "hMaLizwzOQ5LeOnMuj+C6W75Zl5CXXYbwDSHWW9ZOXc=", new string[] { })
-        };
-
         public AuthenticationService()
         {
         }
 
-        public User AuthenticateUser(int id, string inputTxt)
+        public void UpdatePasswd(int id, string pw)
         {
-            //InternalUserData userData = _users.FirstOrDefault(u => u.Username.Equals(username)
-            //    && u.HashedPassword.Equals(CalculateHash(clearTextPassword, u.Username)));
-            string json;
             WebClient client = new WebClient();
-            string url = string.Format("http://www.ectedu.com/api2.php/students/{0}", id);
+            string url = string.Format("http://www.ectedu.com/apiTest.php/students/{0}/PPP/{1}", id, pw);
             string value = client.DownloadString(url);
-            json = value;
-            dynamic d = JsonConvert.DeserializeObject<dynamic>(json);
-            string macid = GetMACAddress();
-            User user = new User();
-            if (d == null)
-            {
-                user.Id = -1;
-                user.Name = "No such account";
-                user.Macid = macid;
-                return user;
-            }
+        }
 
-            user.Id = d.id;
-            user.Name = d.name;
-            user.Passwd = d.passwd;
-            user.Macid = d.macid;
-            user.Level = d.level;
-            user.Location = d.location;
-            user.Status = d.status;
-            user.Created = d.created;
-            user.Email = d.email;
-            user.Roles = d.roles;
-       
+        public User AuthorizeComputer(int id, string pw)
+        {
+            User user = validateUser(id, pw);
+            if (user.Id < 0) return user;
+
+            string macid = GetMACAddress();
+            user.Macid = macid;
+
+            WebClient client = new WebClient();
+            string url = string.Format("http://www.ectedu.com/apiTest.php/students/{0}/PPM/{1}", id, macid);
+            string value = client.DownloadString(url);
+            return user;
+        }
+
+        public User AuthenticateUser(int id, string pw)
+        {
+            User user = validateUser(id, pw);
+            if (user.Id < 0) return user;
+
+            string macid = GetMACAddress();
             
-            if (!user.Passwd.Equals(inputTxt))
-            {
-                user.Id = -1;
-                user.Name = "Invalid account";
-            } else if (!user.Macid.Equals(macid))
+            if (!user.Macid.Equals(macid))
             {
                 user.Id = -1;
                 user.Name = "Invalid Computer";
@@ -112,15 +95,35 @@ namespace SpeechTTS.Auth
             return user;
         }
 
-        private string CalculateHash(string clearTextPassword, string salt)
+        private User validateUser(int id, string pw)
         {
-            // Convert the salted password to a byte array
-            byte[] saltedHashBytes = Encoding.UTF8.GetBytes(clearTextPassword + salt);
-            // Use the hash algorithm to calculate the hash
-            HashAlgorithm algorithm = new SHA256Managed();
-            byte[] hash = algorithm.ComputeHash(saltedHashBytes);
-            // Return the hash as a base64 encoded string to be compared to the stored password
-            return Convert.ToBase64String(hash);
+            string json;
+            WebClient client = new WebClient();
+            string url = string.Format("http://www.ectedu.com/apiTest.php/students/{0}/PG/{1}", id, pw);
+            string value = client.DownloadString(url);
+            json = value;
+            dynamic d = JsonConvert.DeserializeObject<dynamic>(json);
+            string macid = GetMACAddress();
+
+            User user = new User();
+            if (d == null)
+            {
+                user.Id = -1;
+                user.Name = "Invalid Account";
+                return user;
+            }
+ 
+            user.Id = d.id;
+            user.Name = d.name;
+            user.Macid = d.macid;
+            user.Level = d.level;
+            user.Location = d.location;
+            user.Status = d.status;
+            user.Created = d.created;
+            user.Email = d.email;
+            user.Roles = d.roles;
+
+            return user;
         }
 
         public static string GetMACAddress()

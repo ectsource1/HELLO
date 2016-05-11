@@ -65,10 +65,12 @@
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Grid.Row="3" Grid.ColumnSpan="4">
-            <GroupBox Header="Story Index">
+            <GroupBox Header="Story Index" BorderBrush="#FF0F68A6" BorderThickness="2">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Page"   FontWeight="Bold" Margin="5, 0, 1, 2" />
                     <TextBlock Text="{Binding TextDocument.Idx}"   FontWeight="Bold" Margin="3, 0, 1, 2" />
+                    <TextBlock Text="FontSize: " FontWeight="Bold" Margin="200,0,1,2" AutomationProperties.AutomationId="lfontsize" />
+                    <ComboBox ItemsSource="{Binding FontSizeOptions}"  SelectedItem="{Binding FontSize}" Margin="5,0,1,2"/>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="Pictures"  BorderBrush="#FF0F68A6" BorderThickness="2" Margin="2, 0, 1, 2">
@@ -109,8 +111,8 @@
                     </Slider>
                 </GroupBox>
 
-                <Button  Width="60"  Command="{Binding SpeakCommand}" CommandParameter ="{Binding ElementName=EditBox}" Content="Speak" IsEnabled="{Binding SpeakClickable}"  Margin="2, 20, 2, 0"/>
-                <Button  Width="60"  Command="{Binding Mp3Command}" CommandParameter ="{Binding ElementName=EditBox}" Content="MP3" IsEnabled="False"  Margin="2, 20, 2, 0"/>
+                <Button  Width="60"  Command="{Binding SpeakCommand}" Content="Speak" IsEnabled="{Binding SpeakClickable}"  Margin="2, 20, 2, 0"/>
+                <Button  Width="60"  Command="{Binding Mp3Command}"   Content="MP3" IsEnabled="False"  Margin="2, 20, 2, 0"/>
                 <Button  Width="60"  Command="{Binding ResetCommand}"  Content="Reset" Margin="2, 30, 2, 0"/>
                 <Button  Width="60"  Command="{Binding PauseCommand}" Content="Pause" IsEnabled="{Binding StopClickable}" Margin="2, 20, 2, 0"/>
                 <Button  Width="60"  Command="{Binding ResumeCommand}" Content="Resume" IsEnabled="{Binding ResumeClickable}" Margin="2, 20, 2, 0"/>

@@ -20,9 +20,10 @@
 
         <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
             <TextBlock Text="ECT" TextWrapping="NoWrap" Foreground="#FFFFFF" FontSize="36" Opacity="0.85"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="40" Width="75" TextAlignment="Left" FontWeight="Bold" />
-            <TextBlock Text="艾琳国际英语培训学校" TextWrapping="NoWrap" Foreground="#8B008B" FontSize="36" Opacity="0.85" Height="40" TextAlignment="Left" FontWeight="Bold" Width="525"/>
+            <TextBlock Text="艾琳国际英语学校" TextWrapping="NoWrap" Foreground="#8B008B" FontSize="36" Opacity="0.85" Height="40" TextAlignment="Left" FontWeight="Bold" />
+            <TextBlock Text="专用教学软件" TextWrapping="NoWrap" Foreground="#8B008B" FontSize="16" Opacity="0.55" Height="20" TextAlignment="Left" FontWeight="Bold" Margin="2,12,2,2"/>
             <TextBlock Text="{Binding Status}" TextWrapping="NoWrap" />
-            
+
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding NotAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
@@ -35,10 +36,29 @@
                     HorizontalAlignment="Center"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
-            <Button Content="Log out" Command="{Binding LogoutCommand}"
-                    HorizontalAlignment="Center" Margin="2,0,8,0"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding FocusPoint, Converter={StaticResource booleanToVisibilityConverter}}" Margin="-63,0,0,0">
+            <Button Content="ECT"  Margin="2,2,8,2" HorizontalAlignment="Center"/>
         </StackPanel>
         
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding NeedUpdate, Converter={StaticResource booleanToVisibilityConverter}}" Margin="-63,0,0,0">
+            <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="ID:"/>
+            <TextBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" Text="{Binding Id}" x:Name="id1"/>
+            <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="Password:"/>
+            <PasswordBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" x:Name="passwordBox1"/>
+            <Button Content="Change Password" Command="{Binding UpdatePasswd}"
+                    CommandParameter="{Binding ElementName=passwordBox1}" Margin="2,2,8,2"
+                    HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding NeedAuth, Converter={StaticResource booleanToVisibilityConverter}}" Margin="-63,0,0,0">
+            <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="ID:"/>
+            <TextBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" Text="{Binding Id}" x:Name="id2"/>
+            <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="Password:"/>
+            <PasswordBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" x:Name="passwordBox2"/>
+            <Button Content="Authorize This Computer" Command="{Binding AuthCommand}"  
+                    CommandParameter="{Binding ElementName=passwordBox2}" Margin="2,2,8,2"
+                    HorizontalAlignment="Center"/>
+        </StackPanel>
+
     </Grid>
 </UserControl>

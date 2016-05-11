@@ -10,7 +10,7 @@ using SpeechInfrastructure;
 namespace SpeechRecording.Views
 {
     [Export]
-    [ViewSortHint("04")]
+    [ViewSortHint("12")]
     public partial class RecordNavigationItemView : UserControl, IPartImportsSatisfiedNotification
     {
         private static Uri recordViewUri = new Uri("/RecordView", UriKind.Relative);

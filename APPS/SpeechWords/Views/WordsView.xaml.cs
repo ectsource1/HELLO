@@ -1,10 +1,8 @@
-// Copyright (c) Microsoft Corporation. All rights reserved. See License.txt in the project root for license information.
-using System;
+// Copyright (c) Microsoft Corporation. All rights reserved
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using SpeechWords.ViewModels;
 using System.Security.Permissions;
-using System.Windows.Media.Imaging;
 
 namespace SpeechWords.Views
 {
@@ -28,6 +26,7 @@ namespace SpeechWords.Views
                 this.DataContext = value;
                 WordsViewModel model = (WordsViewModel)this.DataContext;
                 model.setImage(ImageViewer1);
+                model.setEditbox(EditBox);
             }
         }
     }

@@ -10,7 +10,7 @@ using SpeechInfrastructure;
 namespace SpeechWritting.Views
 {
     [Export]
-    [ViewSortHint("05")]
+    [ViewSortHint("13")]
     public partial class WrittingNavigationItemView : UserControl, IPartImportsSatisfiedNotification
     {
         private static Uri ttsViewUri = new Uri("/WrittingView", UriKind.Relative);

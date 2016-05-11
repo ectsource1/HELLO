@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechWritting", "..\Speech
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechWords", "..\SpeechWords\SpeechWords.csproj", "{D6FF65BD-7E55-4B3A-8785-0A18797E2FFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechVideos", "SpeechVideos\SpeechVideos.csproj", "{BA63B58B-6074-455D-88C1-5958716E5FB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{D6FF65BD-7E55-4B3A-8785-0A18797E2FFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6FF65BD-7E55-4B3A-8785-0A18797E2FFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6FF65BD-7E55-4B3A-8785-0A18797E2FFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA63B58B-6074-455D-88C1-5958716E5FB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA63B58B-6074-455D-88C1-5958716E5FB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA63B58B-6074-455D-88C1-5958716E5FB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA63B58B-6074-455D-88C1-5958716E5FB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

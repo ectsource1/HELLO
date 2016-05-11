@@ -209,6 +209,10 @@
       <Project>{e61c987d-e008-4605-86d4-1e12286b67fa}</Project>
       <Name>VoiceRecorder.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="SpeechVideos\SpeechVideos.csproj">
+      <Project>{ba63b58b-6074-455d-88c1-5958716e5fb8}</Project>
+      <Name>SpeechVideos</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Theme\logo.ico" />

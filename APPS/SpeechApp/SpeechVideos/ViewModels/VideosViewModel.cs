@@ -15,13 +15,14 @@ using NAudio.Wave;
 using NAudio.Lame;
 using System.Threading;
 using SpeechTTS.Auth;
-using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
-namespace SpeechWords.ViewModels
+
+namespace SpeechVideos.ViewModels
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class WordsViewModel : BindableBase, INavigationAware
+    public class VideosViewModel : BindableBase, INavigationAware
     {
         private readonly DelegateCommand goBackCommand;
         private readonly DelegateCommand resetCommand;
@@ -34,6 +35,11 @@ namespace SpeechWords.ViewModels
         private readonly DelegateCommand nextCommand;
         private readonly DelegateCommand speakWordCommand;
 
+        private readonly DelegateCommand playVideoCommand;
+        private readonly DelegateCommand pauseVideoCommand;
+        private readonly DelegateCommand resumeVideoCommand;
+        private readonly DelegateCommand stopVideoCommand;
+
         private readonly ITTService ttsService;
         private TextDocument textDocument;
         private IRegionNavigationJournal navigationJournal;
@@ -42,6 +48,9 @@ namespace SpeechWords.ViewModels
         private string selectedVoice="Male";
         private int volume = 100;
         private int rate = 10;
+        private double videoVolume = 1;
+        private double maxTime=1;
+        private double videoProgress = 0;
 
         private bool preClickable = false;
         private bool nextClickable = false;
@@ -50,24 +59,44 @@ namespace SpeechWords.ViewModels
         private bool stopClickable = false;
         private bool resumeClickable = false;
 
+        private bool videoPlayClickable = true;
+        private bool videoStopClickable = false;
+        private bool videoResumeClickable = false;
+
+        private bool transcriptIsChecked = true;
+        private bool dialogIsChecked = false;
+        private bool vocabIsChecked = false;
+        private bool allIsChecked = false;
+        private bool notTranscript = false;
+
+        private bool repeatSelected = false;
+        private bool dialogSelected = false;
+
         private string selectedText;
+        private string selectedText2;
         private List<int> repeatOptions;
         private List<int> fontSizeOptions;
         private int repeat = 5;
-        private int fontSize = 26;
+        private int fontSize = 16;
         private int repeatCnt = 0;
+
+        private int dialogIdx = 0;
+        private int dialogCnt = 0;
+        private string gender = "";
+        private string sentence = "";
 
         SpeechSynthesizer voice; 
         private bool wordSpeak = false;
         private string message = "";
-
         
         FsRichTextBox fsRichTextBox;
-        System.Windows.Controls.Image image;
+        FsRichTextBox fsRichTextBox2;
+        MediaElement viewer;
 
+        
 
         [ImportingConstructor]
-        public WordsViewModel(ITTService ttsService)
+        public VideosViewModel(ITTService ttsService)
         {
             this.goBackCommand = new DelegateCommand(this.GoBack);
             this.resetCommand = new DelegateCommand(this.Reset);
@@ -78,10 +107,14 @@ namespace SpeechWords.ViewModels
             this.stopCommand = new DelegateCommand(this.Stop);
             this.preCommand = new DelegateCommand(this.Pre);
             this.nextCommand = new DelegateCommand(this.Next);
-
             this.speakWordCommand = new DelegateCommand(this.SpeakWord);
 
-            this.ttsService = ttsService;
+            this.playVideoCommand  = new DelegateCommand(this.PlayVideo);
+            this.pauseVideoCommand = new DelegateCommand(this.PauseVideo);
+            this.resumeVideoCommand = new DelegateCommand(this.ResumeVideo);
+            this.stopVideoCommand  = new DelegateCommand(this.StopVideo); 
+
+            this.ttsService = ttsService;  
 
             voiceOptions = new List<string>
             {
@@ -113,32 +146,82 @@ namespace SpeechWords.ViewModels
             voice.SpeakCompleted += OnSpeakCompleted;
             voice.SpeakProgress += OnWord;
 
+            //viewer.MediaEnded += OnVideoEnded;
+
             selectedText = "";
         }
 
-        public void setEditbox(FsRichTextBox txtBox)
+        public void MediaEnded()
+        {
+            viewer.Position = TimeSpan.FromSeconds(0);
+            wordSpeak = false;
+            this.PreClickable = true;
+            this.NextClickable = true;
+            this.StopClickable = false;
+            this.ResumeClickable = false;
+            this.SpeakClickable = true;
+
+            this.VideoPlayClickable = true;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = false;
+
+            viewer.Stop();
+
+        }
+
+        public void setEditbox(FsRichTextBox txtBox, FsRichTextBox txtBox2)
         {
             fsRichTextBox = txtBox;
             fsRichTextBox.FontSize = fontSize;
+
+            fsRichTextBox2 = txtBox2;
+            fsRichTextBox2.FontSize = fontSize;
         }
 
-        public void setImage(System.Windows.Controls.Image img)
+        public void setVideoPlayer(System.Windows.Controls.MediaElement view)
         {
-            image = img;
+            viewer = view;
         }
 
         void OnSpeakCompleted(object sender, EventArgs e)
         {
             this.Stop();
 
-            if (repeatCnt < repeat)
+            if (repeatSelected)
             {
-                this.SpeakWord();
+                if (repeatCnt < repeat)
+                {
+                    this.SpeakWord();
+                }
+                else
+                {
+                    this.RepeatCnt = 0;
+                    RepeatSelected = false;
+                }
             }
-            else
+
+            if (dialogSelected)
             {
-                this.RepeatCnt = 0;
+                if (dialogIdx < dialogCnt )
+                {
+                    this.SpeakDialog();
+                }
+                else
+                {
+                    this.DialogIdx = 0;
+                    DialogSelected = false;
+                    this.PreClickable = true;
+                    this.NextClickable = true;
+                    this.StopClickable = false;
+                    this.ResumeClickable = false;
+                    this.SpeakClickable = true;
+
+                    this.VideoPlayClickable = true;
+                    this.VideoStopClickable = false;
+                    this.VideoResumeClickable = false;
+                }
             }
+
 
             this.Message = "Done Reading!!";
         }
@@ -197,6 +280,26 @@ namespace SpeechWords.ViewModels
         public ICommand NextCommand
         {
             get { return this.nextCommand; }
+        }
+
+        public ICommand PlayVideoCommand
+        {
+            get { return this.playVideoCommand; }
+        }
+
+        public ICommand PauseVideoCommand
+        {
+            get { return this.pauseVideoCommand; }
+        }
+
+        public ICommand ResumeVideoCommand
+        {
+            get { return this.resumeVideoCommand; }
+        }
+
+        public ICommand StopVideoCommand
+        {
+            get { return this.stopVideoCommand; }
         }
 
 
@@ -299,7 +402,33 @@ namespace SpeechWords.ViewModels
 
             set
             {
-                this.SetProperty(ref this.selectedText, value);
+                string txt = value;
+                if (txt.Length > 50)
+                {
+                    txt = txt.Substring(50);  
+                }
+
+                this.SetProperty(ref this.selectedText, txt);
+
+            }
+        }
+
+        public string SelectedText2
+        {
+            get
+            {
+                return this.selectedText2;
+            }
+
+            set
+            {
+                string txt = value;
+                if (txt.Length > 50)
+                {
+                    txt = txt.Substring(50);
+                }
+
+                this.SetProperty(ref this.selectedText2, txt);
             }
         }
 
@@ -326,6 +455,47 @@ namespace SpeechWords.ViewModels
             set
             {
                 this.SetProperty(ref this.rate, value);
+            }
+        }
+
+        public double VideoVolume
+        {
+            get
+            {
+                return this.videoVolume;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.videoVolume, value);
+                viewer.Volume = videoVolume;
+            }
+        }
+
+        public double MaxTime
+        {
+            get
+            {
+                return this.maxTime;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.maxTime, value);
+            }
+        }
+
+        public double VideoProgress
+        {
+            get
+            {
+                return this.videoProgress;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.videoProgress, value);
+                viewer.Position = TimeSpan.FromSeconds(videoProgress);
             }
         }
 
@@ -394,6 +564,139 @@ namespace SpeechWords.ViewModels
             }
         }
 
+        public bool VideoPlayClickable
+        {
+            get
+            {
+                return this.videoPlayClickable;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.videoPlayClickable, value);
+            }
+        }
+
+        public bool VideoStopClickable
+        {
+            get
+            {
+                return this.videoStopClickable;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.videoStopClickable, value);
+            }
+        }
+
+        public bool VideoResumeClickable
+        {
+            get
+            {
+                return this.videoResumeClickable;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.videoResumeClickable, value);
+            }
+        }
+
+        
+
+        public bool TranscriptIsChecked
+        {
+            get
+            {
+                return this.transcriptIsChecked;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.transcriptIsChecked, value);
+                NotTranscript = !transcriptIsChecked;
+            }
+        }
+
+        public bool NotTranscript
+        {
+            get
+            {
+                return notTranscript;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.notTranscript, value);
+            }
+        }
+
+        public bool DialogIsChecked
+        {
+            get
+            {
+                return this.dialogIsChecked;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.dialogIsChecked, value);
+            }
+        }
+
+        public bool VocabIsChecked
+        {
+            get
+            {
+                return this.vocabIsChecked;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.vocabIsChecked, value);
+            }
+        }
+
+        public bool AllIsChecked
+        {
+            get
+            {
+                return this.allIsChecked;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.allIsChecked, value);
+            }
+        }
+
+        public bool RepeatSelected
+        {
+            get
+            {
+                return this.repeatSelected;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.repeatSelected, value);
+            }
+        }
+
+        public bool DialogSelected
+        {
+            get
+            {
+                return this.dialogSelected;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.dialogSelected, value);
+            }
+        }
+
         public string Message
         {
             get
@@ -404,6 +707,45 @@ namespace SpeechWords.ViewModels
             set
             {
                 this.SetProperty(ref this.message, value);
+            }
+        }
+
+        public string Gender
+        {
+            get
+            {
+                return this.gender;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.gender, value);
+            }
+        }
+
+        public string Sentence
+        {
+            get
+            {
+                return this.sentence;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.sentence, value);
+            }
+        }
+
+        public int DialogIdx
+        {
+            get
+            {
+                return this.dialogIdx;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.dialogIdx, value);
             }
         }
 
@@ -430,6 +772,10 @@ namespace SpeechWords.ViewModels
             this.StopClickable = true;
             this.ResumeClickable = false;
             this.SpeakClickable = false;
+
+            this.VideoPlayClickable = false;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = false;
 
             this.Message = "Saving To MP3...";
 
@@ -462,10 +808,7 @@ namespace SpeechWords.ViewModels
 
         public static void ConvertWavStreamToMp3File(ref MemoryStream ms, string savetofilename)
         {
-            //rewind to beginning of stream
-            
             ms.Seek(0, SeekOrigin.Begin);
-
             using (var retMs = new MemoryStream())
             using (var rdr = new WaveFileReader(ms))
             using (var wtr = new LameMP3FileWriter(savetofilename, rdr.WaveFormat, LAMEPreset.VBR_90))
@@ -483,30 +826,73 @@ namespace SpeechWords.ViewModels
             this.ResumeClickable = false;
             this.SpeakClickable = false;
 
+            this.VideoPlayClickable = false;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = false;
+
             this.Message = "Reading Text...";
-
-            switch (selectedVoice)
-            {
-                case "Male":
-                    voice.SelectVoiceByHints(VoiceGender.Male);
-                    break;
-                case "Female":
-                    voice.SelectVoiceByHints(VoiceGender.Female);
-                    break;
-            }
-
             voice.Volume = volume;
             voice.Rate = rate - 10;
+            voice.SetOutputToDefaultAudioDevice();
 
-            voice.SetOutputToDefaultAudioDevice();  
-            fsRichTextBox.ResetPointer();
-            voice.SpeakAsync(PlainText());
+            if (transcriptIsChecked)
+            {
+                switch (selectedVoice)
+                {
+                    case "Male":
+                        voice.SelectVoiceByHints(VoiceGender.Male);
+                        break;
+                    case "Female":
+                        voice.SelectVoiceByHints(VoiceGender.Female);
+                        break;
+                }
+
+                fsRichTextBox.ResetPointer();
+                voice.SpeakAsync(PlainText());
+
+            } else if (vocabIsChecked) {
+
+                switch (selectedVoice)
+                {
+                    case "Male":
+                        voice.SelectVoiceByHints(VoiceGender.Male);
+                        break;
+                    case "Female":
+                        voice.SelectVoiceByHints(VoiceGender.Female);
+                        break;
+                }
+                voice.SpeakAsync(textDocument.Vocalburay);
+
+            } else if (dialogIsChecked) {
+
+                DialogSelected = true;
+                dialogCnt = textDocument.SentenceList.Count;
+                if (dialogCnt > 0)
+                {
+                    SpeakDialog();
+                }   
+            }
+        }
+
+        private void SpeakDialog()
+        {
+            Gender = textDocument.GenderList[dialogIdx];
+            Sentence = textDocument.SentenceList[dialogIdx];
+            if (gender.Equals("M"))
+                 voice.SelectVoiceByHints(VoiceGender.Male);
+            else
+                 voice.SelectVoiceByHints(VoiceGender.Female);
+
+            voice.SpeakAsync(sentence);
+            DialogIdx += 1;
         }
 
         private void SpeakWord()
         {
-            if (selectedText.Length < 2)
-                return;
+            RepeatSelected = true;
+            string tmp = selectedText;
+            if (notTranscript) tmp = selectedText2;
+            if (tmp.Length < 2) return;
 
             if (repeat == 0) Repeat = 1;
 
@@ -516,6 +902,10 @@ namespace SpeechWords.ViewModels
             this.StopClickable = false;
             this.ResumeClickable = false;
             this.SpeakClickable = false;
+
+            this.VideoPlayClickable = false;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = false;
 
             this.RepeatCnt += 1;
 
@@ -531,7 +921,7 @@ namespace SpeechWords.ViewModels
 
             voice.Volume = volume;
             voice.Rate = Rate - 10;
-            voice.SpeakAsync(selectedText);
+            voice.SpeakAsync(tmp);
         }
 
         private void Pause()
@@ -540,6 +930,10 @@ namespace SpeechWords.ViewModels
             this.StopClickable = false;
             this.SpeakClickable = false;
             this.ResumeClickable = true;
+
+            this.VideoPlayClickable = false;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = false;
         }
 
         private void Resume()
@@ -548,6 +942,10 @@ namespace SpeechWords.ViewModels
             this.StopClickable = true;
             this.SpeakClickable = false;
             this.ResumeClickable = false;
+
+            this.VideoPlayClickable = false;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = false;
         }
 
         private void Stop()
@@ -559,6 +957,10 @@ namespace SpeechWords.ViewModels
             this.StopClickable = false;
             this.SpeakClickable = true;
             this.ResumeClickable = false;
+
+            this.VideoPlayClickable = true;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = false;
         }
 
         private void Pre()
@@ -572,15 +974,21 @@ namespace SpeechWords.ViewModels
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\") + 1);
                 string imgName = folderName + tmp.ImgList[tmp.Idx];
 
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(imgName);
-                bitmap.EndInit();
-                image.Source = bitmap;
-
+                viewer.Source = new Uri(imgName);
+                viewer.LoadedBehavior = MediaState.Manual;
+                viewer.UnloadedBehavior = MediaState.Manual;
+                viewer.Volume = videoVolume;
                 this.TextDocument = tmp;
+                this.PreClickable = false;
+                this.NextClickable = false;
+                this.StopClickable = false;
+                this.ResumeClickable = false;
+                this.SpeakClickable = false;
 
-                Speak();
+                this.VideoPlayClickable = false;
+                this.VideoStopClickable = true;
+                this.VideoResumeClickable = false;
+                viewer.Play();
             }
             
         }
@@ -598,18 +1006,71 @@ namespace SpeechWords.ViewModels
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\")+1);
                 string imgName = folderName + tmp.ImgList[tmp.Idx];
 
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(imgName);
-                bitmap.EndInit();
-                image.Source = bitmap;
-
+                viewer.Source = new Uri(imgName);
+                viewer.LoadedBehavior = MediaState.Manual;
+                viewer.UnloadedBehavior = MediaState.Manual;
+                viewer.Volume = videoVolume;
                 this.TextDocument = tmp;
+                this.PreClickable = false;
+                this.NextClickable = false;
+                this.StopClickable = false;
+                this.ResumeClickable = false;
+                this.SpeakClickable = false;
 
-                Speak();
+                this.VideoPlayClickable = false;
+                this.VideoStopClickable = true;
+                this.VideoResumeClickable = false;
+                viewer.Play();
 
             }
             
+        }
+
+        private void PlayVideo()
+        {
+            viewer.LoadedBehavior = MediaState.Manual;
+            wordSpeak = false;
+            this.PreClickable = false;
+            this.NextClickable = false;
+            this.StopClickable = false;
+            this.ResumeClickable = false;
+            this.SpeakClickable = false;
+
+            this.VideoPlayClickable = false;
+            this.VideoStopClickable = true;
+            this.VideoResumeClickable = false;
+            viewer.Play();
+        }
+
+        private void PauseVideo()
+        {
+            viewer.Pause();
+            this.VideoPlayClickable = false;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = true;
+        }
+
+        private void ResumeVideo()
+        {
+            viewer.Play();
+            this.VideoPlayClickable = false;
+            this.VideoStopClickable = true;
+            this.VideoResumeClickable = false;
+        }
+
+        private void StopVideo()
+        {
+            viewer.Stop();
+            
+            this.PreClickable = true;
+            this.NextClickable = true;
+            this.StopClickable = false;
+            this.ResumeClickable = false;
+            this.SpeakClickable = true;
+
+            this.VideoPlayClickable = true;
+            this.VideoStopClickable = false;
+            this.VideoResumeClickable = false;
         }
 
         string PlainText()
@@ -662,7 +1123,7 @@ namespace SpeechWords.ViewModels
             var textId = GetRequestedTextId(navigationContext);
             if (textId.HasValue)
             {
-                TextDocument temp = this.ttsService.GetCardsDocument(textId.Value);
+                TextDocument temp = this.ttsService.GetActivitiesDocument(textId.Value);
                 CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
                 if (customPrincipal == null)
                     throw new ArgumentException("Must set CustomPrincipal object on startup.");
@@ -673,13 +1134,12 @@ namespace SpeechWords.ViewModels
 
                 string folderName = temp.FileName.Substring(0, temp.FileName.LastIndexOf(@"\") + 1);
                 string imgName = folderName + temp.ImgList[0];
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(imgName);
-                bitmap.EndInit();
-                image.Source = bitmap;
-
+                viewer.Source = new Uri(imgName);
+                viewer.LoadedBehavior   = MediaState.Stop;
+                viewer.UnloadedBehavior = MediaState.Manual;
+                viewer.Volume = videoVolume;
                 this.TextDocument = temp;
+                //viewer.Play();
             }
 
             this.navigationJournal = navigationContext.NavigationService.Journal;

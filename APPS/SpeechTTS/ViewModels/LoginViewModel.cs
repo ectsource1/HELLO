@@ -16,21 +16,30 @@ namespace SpeechTTS.ViewModels
     {
         private readonly IAuthenticationService _authService;
         private readonly DelegateCommand logoutCommand;
+        private readonly DelegateCommand<object> authCommand;
         private readonly DelegateCommand<object> loginCommand;
+        private readonly DelegateCommand<object> updatePasswd;
 
-        private bool isAuthenticated;
+        private bool needAuth;
+        private bool needUpdate;
+        private bool focusPoint;
         private bool notAuthenticated;
 
         private int id;
         private string _status;
-
+         
         [ImportingConstructor]
         public LoginViewModel(IAuthenticationService authService)
         {
-            this.loginCommand = new DelegateCommand<object>(this.Login);
             this.logoutCommand = new DelegateCommand(this.Logout);
+            this.authCommand  = new DelegateCommand<object>(this.Authorize);
+            this.loginCommand = new DelegateCommand<object>(this.Login);
+            this.updatePasswd = new DelegateCommand<object>(this.UpdatePw);
+
             this._authService = authService;
-            isAuthenticated = false;
+            needAuth = false;
+            needUpdate = false;
+            focusPoint = false;
             notAuthenticated = true;
         }
 
@@ -42,6 +51,16 @@ namespace SpeechTTS.ViewModels
         public ICommand LogoutCommand
         {
             get { return this.logoutCommand; }
+        }
+
+        public ICommand AuthCommand
+        {
+            get { return this.authCommand; }
+        }
+
+        public ICommand UpdatePasswd
+        {
+            get { return this.updatePasswd; }
         }
 
         public int Id
@@ -63,16 +82,53 @@ namespace SpeechTTS.ViewModels
             set { this.SetProperty(ref this._status, value); }
         }
 
-        public bool IsAuthenticated
+        public bool NeedAuth
         {
-            get { return this.isAuthenticated; }
-            set { this.SetProperty(ref this.isAuthenticated, value); }
+            get { return this.needAuth; }
+            set { this.SetProperty(ref this.needAuth, value); }
+        }
+
+        public bool NeedUpdate
+        {
+            get { return this.needUpdate; }
+            set { this.SetProperty(ref this.needUpdate, value); }
+        }
+
+        public bool FocusPoint
+        {
+            get { return this.focusPoint; }
+            set { this.SetProperty(ref this.focusPoint, value); }
         }
 
         public bool NotAuthenticated
         {
             get { return this.notAuthenticated; }
             set { this.SetProperty(ref this.notAuthenticated, value); }
+        }
+
+        private void Authorize(object control)
+        {
+            PasswordBox passwordBox = control as PasswordBox;
+            string password = passwordBox.Password;
+            User user = _authService.AuthorizeComputer(id, password);
+            if (user.Id == -1)
+            {
+                Status = user.Name;
+                return;
+            }
+
+            setIdentity(user);
+        }
+
+        private void UpdatePw(object control)
+        {
+            PasswordBox passwordBox = control as PasswordBox;
+            string passwd = passwordBox.Password;
+            _authService.UpdatePasswd(Id, passwd);
+            FocusPoint = true;
+            NotAuthenticated = false;
+            NeedUpdate = false;
+            NeedAuth = false;
         }
 
         private void Login(object control)
@@ -88,31 +144,13 @@ namespace SpeechTTS.ViewModels
 
                 if (user.Id == -1)
                 {
-                    MessageBox.Show(user.Name + "\n" + user.Macid);
-                    Status = "Invalid Account";
+                    //MessageBox.Show(user.Name + "\n" + user.Macid);
+                    Status = user.Name;
                     return;
                 }
 
-                //Get the current principal object
-                CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
-                if (customPrincipal == null)
-                    throw new ArgumentException("Must set CustomPrincipal object on startup.");
-
-                //Authenticate the user
-                string userId = "ECT" + user.Location + user.Id;
-                string[] roles = user.Roles.Split(',');
-                customPrincipal.Identity = new CustomIdentity(userId, user.Name, user.Level, user.Email, roles);
-                IsAuthenticated = true;
-                NotAuthenticated = false;
-
-                //Update UI
-                //NotifyPropertyChanged("AuthenticatedUser");
-                //NotifyPropertyChanged("IsAuthenticated");
-                //_loginCommand.RaiseCanExecuteChanged();
-                //_logoutCommand.RaiseCanExecuteChanged();
-                //Username = string.Empty; //reset
-                //passwordBox.Password = string.Empty; //reset
-                //Status = string.Empty;
+                setIdentity(user);
+                
             }
             catch (UnauthorizedAccessException)
             {
@@ -124,13 +162,31 @@ namespace SpeechTTS.ViewModels
             }
         }
 
+        private void setIdentity(User user)
+        {
+            //Get the current principal object
+            CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
+            if (customPrincipal == null)
+                throw new ArgumentException("Must set CustomPrincipal object on startup.");
+
+            //Authenticate the user
+            string userId = "ECT" + user.Location + user.Id;
+            string[] roles = user.Roles.Split(',');
+            customPrincipal.Identity = new CustomIdentity(userId, user.Name, user.Level, user.Email, roles);
+            FocusPoint = true;
+            NotAuthenticated = false;
+            NeedUpdate = false;
+            NeedAuth = false;
+        }
+
         private void Logout()
         {
             CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
             if (customPrincipal != null)
             {
                 customPrincipal.Identity = new AnonymousIdentity();
-                IsAuthenticated = false;
+                FocusPoint = false;
+                NeedUpdate = false;
                 NotAuthenticated = true;
                 Status = string.Empty;
             }
@@ -140,7 +196,7 @@ namespace SpeechTTS.ViewModels
         {
             get
             {
-                if (IsAuthenticated)
+                if (FocusPoint)
                     return string.Format("Signed in as {0}. {1}",
                           Thread.CurrentPrincipal.Identity.Name,
                           Thread.CurrentPrincipal.IsInRole("Administrators") ? "You are an administrator!"

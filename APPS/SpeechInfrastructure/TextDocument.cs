@@ -15,6 +15,11 @@ namespace SpeechInfrastructure
         private List<string> imgList;
         private List<string> txtList;
 
+        private List<string> genderList;
+        private List<string> sentenceList;
+
+        private string dialogs = "";
+
         public TextDocument(bool create = true)
             : this(Guid.NewGuid())
         {
@@ -26,7 +31,10 @@ namespace SpeechInfrastructure
             }
 
             imgList = new List<string>();
-            txtList = new List<string>();            
+            txtList = new List<string>();
+
+            genderList = new List<string>();
+            sentenceList = new List<string>();
         }
 
         public TextDocument(Guid id)
@@ -54,6 +62,22 @@ namespace SpeechInfrastructure
 
         public string Text { get; set;}
 
+        public string Vocalburay { get; set; }
+
+        public String Dialogs
+        {
+            get
+            {
+                return this.dialogs;
+            }
+
+        }
+
+        public void MergeSentences(string s1, string s2)
+        {
+            dialogs += s1 + ": " + s2 + "\n";
+        }
+
         public string Description { get; set; }
 
         public Guid Id { get; set;}
@@ -78,6 +102,26 @@ namespace SpeechInfrastructure
         public void addTxtList(string str)
         {
             txtList.Add(str);
+        }
+
+        public List<string> GenderList
+        {
+            get { return this.genderList; }
+        }
+
+        public void addGender(string str)
+        {
+            genderList.Add(str);
+        }
+
+        public List<string> SentenceList
+        {
+            get { return this.sentenceList; }
+        }
+
+        public void addSentence(string str)
+        {
+            sentenceList.Add(str);
         }
 
         public object Clone()
