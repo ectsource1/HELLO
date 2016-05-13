@@ -30,20 +30,6 @@ namespace SpeechInfrastructure
                 paragraph.Inlines.Add(doc.Text);
                 document = new FlowDocument(paragraph);
             }
-            else if (doc.Type == TextDocument.RTF)
-            {
-                //Paragraph newline = new Paragraph();
-                //newline.Inlines.Add(new Run("Charlie Jiang: Good Man"));
-                //newline.Inlines.Add(Environment.NewLine);
-                //newline.Inlines.Add(new Run("Eileen Jiang:Bad Girl"));
-                document = (FlowDocument)XamlReader.Parse(doc.Text);
-                //document.Blocks.Add(newline);
-            }
-            else if (doc.Type == TextDocument.RTE)
-            {
-                document = (FlowDocument)XamlReader.Parse(doc.Text);
-                document.Blocks.Remove(document.Blocks.LastBlock);
-            }
             else
             {
                 document = new FlowDocument();

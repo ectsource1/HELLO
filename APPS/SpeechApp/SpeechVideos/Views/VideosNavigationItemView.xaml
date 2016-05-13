@@ -13,6 +13,6 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <RadioButton x:Name="NavigateToVideosRadioButton" GroupName="MainNavigation" Click="NavigateToVideosRadioButton_Click" 
-           AutomationProperties.AutomationId="VideosRadioButton">Activities</RadioButton>
+           AutomationProperties.AutomationId="VideosRadioButton">Video Activities</RadioButton>
     </Grid>
 </UserControl>

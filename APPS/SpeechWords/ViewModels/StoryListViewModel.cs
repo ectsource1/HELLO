@@ -103,7 +103,7 @@ namespace SpeechWords.ViewModels
 
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter =
-               "TXT|*.txt|DIC|*.dic";
+               "TXT|*.cartoon";
             dialog.InitialDirectory = "C:\\";
             dialog.Title = "Select a text file";
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -113,10 +113,22 @@ namespace SpeechWords.ViewModels
                 doc.Subject = Path.GetFileNameWithoutExtension(fname);
                 doc.StudentId = doc1.StudentId;
                 doc.From = doc1.From;
+
+                string[] lines = File.ReadAllLines(fname);
+                foreach (string line in lines)
+                {
+                    if (line.Contains(TTService.TITLE_KEY))
+                    {
+                        string[] col = line.Split(new char[] { TTService.SEP_CHAR });
+                        doc.Subject = col[1];
+                        break;
+                    }
+
+                }
+
                 this.ttsService.AddCardsDocument(doc);
                 textCollection.Add(doc);
             }
-            //textCollection.Remove(document);
         }
     }
 }

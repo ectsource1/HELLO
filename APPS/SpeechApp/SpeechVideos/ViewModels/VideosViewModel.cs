@@ -402,14 +402,7 @@ namespace SpeechVideos.ViewModels
 
             set
             {
-                string txt = value;
-                if (txt.Length > 50)
-                {
-                    txt = txt.Substring(50);  
-                }
-
-                this.SetProperty(ref this.selectedText, txt);
-
+                this.SetProperty(ref this.selectedText, value);
             }
         }
 
@@ -422,13 +415,7 @@ namespace SpeechVideos.ViewModels
 
             set
             {
-                string txt = value;
-                if (txt.Length > 50)
-                {
-                    txt = txt.Substring(50);
-                }
-
-                this.SetProperty(ref this.selectedText2, txt);
+                this.SetProperty(ref this.selectedText2, value);
             }
         }
 

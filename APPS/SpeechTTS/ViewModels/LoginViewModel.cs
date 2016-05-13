@@ -108,6 +108,7 @@ namespace SpeechTTS.ViewModels
 
         private void Authorize(object control)
         {
+            Status = "";
             PasswordBox passwordBox = control as PasswordBox;
             string password = passwordBox.Password;
             User user = _authService.AuthorizeComputer(id, password);

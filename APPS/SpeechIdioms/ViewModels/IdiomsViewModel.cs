@@ -18,11 +18,11 @@ using SpeechTTS.Auth;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 
-namespace SpeechWords.ViewModels
+namespace SpeechIdioms.ViewModels
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class WordsViewModel : BindableBase, INavigationAware
+    public class IdiomsViewModel : BindableBase, INavigationAware
     {
         private readonly DelegateCommand goBackCommand;
         private readonly DelegateCommand resetCommand;
@@ -51,12 +51,24 @@ namespace SpeechWords.ViewModels
         private bool stopClickable = false;
         private bool resumeClickable = false;
 
+        private bool transcriptIsChecked = true;
+        private bool dialogIsChecked = false;
+        private bool repeatSelected = false;
+        private bool dialogSelected = false;
+        private bool stoped = false;
+
         private string selectedText;
+        private string selectedText2;
         private List<int> repeatOptions;
         private List<int> fontSizeOptions;
         private int repeat = 5;
         private int fontSize = 16;
         private int repeatCnt = 0;
+
+        private int dialogIdx = 0;
+        private int dialogCnt = 0;
+        private string gender = "";
+        private string sentence = "";
 
         SpeechSynthesizer voice; 
         private bool wordSpeak = false;
@@ -69,7 +81,7 @@ namespace SpeechWords.ViewModels
 
 
         [ImportingConstructor]
-        public WordsViewModel(ITTService ttsService)
+        public IdiomsViewModel(ITTService ttsService)
         {
             this.goBackCommand = new DelegateCommand(this.GoBack);
             this.resetCommand = new DelegateCommand(this.Reset);
@@ -102,8 +114,11 @@ namespace SpeechWords.ViewModels
             fontSizeOptions = new List<int>
             {
                 12,
+                14,
                 16,
+                18,
                 20,
+                22,
                 24,
                 26,
                 28,
@@ -116,6 +131,7 @@ namespace SpeechWords.ViewModels
             voice.SpeakProgress += OnWord;
 
             selectedText = "";
+            selectedText2 = "";
         }
 
         public void MediaEnded()
@@ -150,14 +166,39 @@ namespace SpeechWords.ViewModels
         {
             this.Stop();
 
-            if (repeatCnt < repeat)
+            if (repeatSelected)
             {
-                this.SpeakWord();
+                if (repeatCnt < repeat)
+                {
+                    this.SpeakWord();
+                }
+                else
+                {
+                    this.RepeatCnt = 0;
+                    RepeatSelected = false;
+                }
             }
-            else
+
+            if (dialogSelected)
             {
-                this.RepeatCnt = 0;
+
+                if (dialogIdx < dialogCnt && !stoped)
+                {
+                    this.SpeakDialog();
+                }
+                else
+                {
+                    stoped = false;
+                    this.DialogIdx = 0;
+                    DialogSelected = false;
+                    this.PreClickable = true;
+                    this.NextClickable = true;
+                    this.StopClickable = false;
+                    this.ResumeClickable = false;
+                    this.SpeakClickable = true;
+                }
             }
+
 
             this.Message = "Done Reading!!";
         }
@@ -322,6 +363,19 @@ namespace SpeechWords.ViewModels
             }
         }
 
+        public string SelectedText2
+        {
+            get
+            {
+                return this.selectedText2;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.selectedText2, value);
+            }
+        }
+
         public int Volume
         {
             get
@@ -413,6 +467,59 @@ namespace SpeechWords.ViewModels
             }
         }
 
+        public bool TranscriptIsChecked
+        {
+            get
+            {
+                return this.transcriptIsChecked;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.transcriptIsChecked, value);
+            }
+        }
+
+
+        public bool DialogIsChecked
+        {
+            get
+            {
+                return this.dialogIsChecked;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.dialogIsChecked, value);
+            }
+        }
+
+        public bool RepeatSelected
+        {
+            get
+            {
+                return this.repeatSelected;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.repeatSelected, value);
+            }
+        }
+
+        public bool DialogSelected
+        {
+            get
+            {
+                return this.dialogSelected;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.dialogSelected, value);
+            }
+        }
+
         public string Message
         {
             get
@@ -426,6 +533,44 @@ namespace SpeechWords.ViewModels
             }
         }
 
+        public string Gender
+        {
+            get
+            {
+                return this.gender;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.gender, value);
+            }
+        }
+
+        public string Sentence
+        {
+            get
+            {
+                return this.sentence;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.sentence, value);
+            }
+        }
+
+        public int DialogIdx
+        {
+            get
+            {
+                return this.dialogIdx;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.dialogIdx, value);
+            }
+        }
 
         private void GoBack()
         {
@@ -503,35 +648,60 @@ namespace SpeechWords.ViewModels
             this.SpeakClickable = false;
 
             this.Message = "Reading Text...";
+            voice.Volume = volume;
+            voice.Rate = rate - 10;
+            voice.SetOutputToDefaultAudioDevice();
 
-            switch (selectedVoice)
+            if (transcriptIsChecked)
             {
-                case "Male":
-                    voice.SelectVoiceByHints(VoiceGender.Male);
-                    break;
-                case "Female":
-                    voice.SelectVoiceByHints(VoiceGender.Female);
-                    break;
-            }
+                switch (selectedVoice)
+                {
+                    case "Male":
+                        voice.SelectVoiceByHints(VoiceGender.Male);
+                        break;
+                    case "Female":
+                        voice.SelectVoiceByHints(VoiceGender.Female);
+                        break;
+                }
 
-            if (selectedVoice.Equals("MyVoice"))
-            {
-                audio.Play();
-
-            } else {
-                voice.Volume = volume;
-                voice.Rate = rate - 10;
-                voice.SetOutputToDefaultAudioDevice();
                 fsRichTextBox.ResetPointer();
                 voice.SpeakAsync(PlainText());
+            } else
+            {
+                DialogSelected = true;
+                dialogCnt = textDocument.SentenceList.Count;
+                if (dialogCnt > 0)
+                {
+                    SpeakDialog();
+                }
             }
             
         }
 
+        private void SpeakDialog() { 
+        
+            this.PreClickable = false;
+            this.NextClickable = false;
+            this.StopClickable = true;
+            this.ResumeClickable = false;
+            this.SpeakClickable = false;
+            Gender = textDocument.GenderList[dialogIdx];
+            Sentence = textDocument.SentenceList[dialogIdx];
+            if (gender.Equals("A"))
+                voice.SelectVoiceByHints(VoiceGender.Female);
+            else
+                voice.SelectVoiceByHints(VoiceGender.Male);
+
+            voice.SpeakAsync(sentence);
+            DialogIdx += 1;
+        }
+
         private void SpeakWord()
         {
-            if (selectedText.Length < 2)
-                return;
+            RepeatSelected = true;
+            string tmp = selectedText;
+            if (dialogIsChecked) tmp = selectedText2;
+            if (tmp.Length < 2) return;
 
             if (repeat == 0) Repeat = 1;
 
@@ -577,8 +747,8 @@ namespace SpeechWords.ViewModels
 
         private void Stop()
         {
+            //stoped = true;
             voice.SpeakAsyncCancelAll();
-            audio.Stop();
 
             this.PreClickable = true;
             this.NextClickable = true;
@@ -589,11 +759,13 @@ namespace SpeechWords.ViewModels
 
         private void Pre()
         {
+            TranscriptIsChecked = true;
             TextDocument tmp = (TextDocument)this.TextDocument.Clone();
             if (tmp.Idx > 0 )
             {
                 tmp.Idx -= 1;
                 tmp.Text = tmp.TxtList[tmp.Idx];
+                tmp.SubSubject = tmp.SubjectList[tmp.Idx];
 
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\") + 1);
                 string imgName = folderName + tmp.ImgList[tmp.Idx];
@@ -605,10 +777,14 @@ namespace SpeechWords.ViewModels
                 image.Source = bitmap;
                 this.TextDocument = tmp;
 
-                string audioName = folderName + tmp.MyAudioList[0];
-                audio.Source = new Uri(audioName);
-                audio.LoadedBehavior = MediaState.Manual;
-                audio.UnloadedBehavior = MediaState.Manual;
+                if (tmp.MyAudioList.Count > 0)
+                {
+                    string audioName = folderName + tmp.MyAudioList[0];
+                    audio.Source = new Uri(audioName);
+                    audio.LoadedBehavior = MediaState.Manual;
+                    audio.UnloadedBehavior = MediaState.Manual;
+                }
+                    
                 Speak();
             }
             
@@ -616,6 +792,7 @@ namespace SpeechWords.ViewModels
 
         private void Next()
         {
+            TranscriptIsChecked = true;
             TextDocument tmp = (TextDocument)this.TextDocument.Clone();
             int cnt = tmp.TxtList.Count;
             if (cnt > 0)
@@ -624,6 +801,8 @@ namespace SpeechWords.ViewModels
                 if (tmp.Idx >= cnt) tmp.Idx = 0;
 
                 tmp.Text = tmp.TxtList[tmp.Idx];
+                tmp.SubSubject = tmp.SubjectList[tmp.Idx];
+
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\")+1);
                 string imgName = folderName + tmp.ImgList[tmp.Idx];
 
@@ -635,10 +814,14 @@ namespace SpeechWords.ViewModels
 
                 this.TextDocument = tmp;
 
-                string audioName = folderName + tmp.MyAudioList[0];
-                audio.Source = new Uri(audioName);
-                audio.LoadedBehavior = MediaState.Manual;
-                audio.UnloadedBehavior = MediaState.Manual;
+                if (tmp.MyAudioList.Count > 0)
+                {
+                    string audioName = folderName + tmp.MyAudioList[0];
+                    audio.Source = new Uri(audioName);
+                    audio.LoadedBehavior = MediaState.Manual;
+                    audio.UnloadedBehavior = MediaState.Manual;
+                }
+                
                 Speak();
             }
             
@@ -694,7 +877,7 @@ namespace SpeechWords.ViewModels
             var textId = GetRequestedTextId(navigationContext);
             if (textId.HasValue)
             {
-                TextDocument temp = this.ttsService.GetCardsDocument(textId.Value);
+                TextDocument temp = this.ttsService.GetIdiomsDocument(textId.Value);
                 CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
                 if (customPrincipal == null)
                     throw new ArgumentException("Must set CustomPrincipal object on startup.");
@@ -702,6 +885,7 @@ namespace SpeechWords.ViewModels
                 CustomIdentity identity = customPrincipal.Identity;
                 temp.StudentId = identity.Name;
                 temp.From = identity.Fullname;
+                temp.SubSubject = temp.SubjectList[0];
 
                 string folderName = temp.FileName.Substring(0, temp.FileName.LastIndexOf(@"\") + 1);
                 string imgName = folderName + temp.ImgList[0];

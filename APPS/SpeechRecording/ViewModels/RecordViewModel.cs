@@ -329,7 +329,6 @@ namespace SpeechRecording.ViewModels
                 if (recorder.RecordingState == RecordingState.Stopped)
                       BeginMonitoring(selectedRecordingDeviceIndex);
 
-                //this.WaveFileName = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".wav");
                 this.WaveFileName = Path.Combine(Path.GetTempPath(), fileBase() + ".wav");
                 recorder.BeginRecording(waveFileName);
                 this.ShowWaveForm = recorder.RecordingState == RecordingState.Recording ||
@@ -439,8 +438,10 @@ namespace SpeechRecording.ViewModels
         public string LocateLame()
         {
             string lameExePath = Settings.Default.LameExePath;
+            //string lameExePath = "C:\\APPS\\bin\\Lame";
 
-            if (String.IsNullOrEmpty(lameExePath) || !File.Exists(lameExePath))
+            //if (String.IsNullOrEmpty(lameExePath) || !File.Exists(lameExePath))
+            if (!File.Exists(lameExePath))
             {
                 if (MessageBox.Show("To save as MP3 requires LAME.exe, please locate",
                     "Save as MP3",
@@ -473,6 +474,7 @@ namespace SpeechRecording.ViewModels
 
         private void RenderFile()
         {
+            //string tmpFile = "C:\\ECTData\\Cartoons\\LionAndMouse\\test1.mp3";
             playSampleAggregator.RaiseRestart();
             using (WaveFileReader reader = new WaveFileReader(this.waveFileName))
             {

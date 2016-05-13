@@ -14,12 +14,12 @@ using System.Windows.Input;
 using SpeechTTS.Model;
 using SpeechInfrastructure;
 
-namespace SpeechVideos.ViewModels
+namespace SpeechIdioms.ViewModels
 {
     [Export]
-    public class VideoListViewModel : BindableBase
+    public class IdiomListViewModel : BindableBase
     {
-        private const string ViewKey = "VideosView";
+        private const string ViewKey = "IdiomsView";
         private const string TextIdKey = "TextId";
 
         private readonly SynchronizationContext synchronizationContext;
@@ -31,7 +31,7 @@ namespace SpeechVideos.ViewModels
         private readonly ObservableCollection<TextDocument> textCollection;
 
         [ImportingConstructor]
-        public VideoListViewModel(ITTService ttsService, IRegionManager regionManager)
+        public IdiomListViewModel(ITTService ttsService, IRegionManager regionManager)
         {
             this.synchronizationContext = SynchronizationContext.Current ?? new SynchronizationContext();
             this.loadTextCommand = new DelegateCommand<TextDocument>(this.loadFile);
@@ -42,10 +42,10 @@ namespace SpeechVideos.ViewModels
 
             this.ttsService = ttsService;
             this.regionManager = regionManager;
-            this.ttsService.BeginGetActivitiesDocuments(
+            this.ttsService.BeginGetIdiomsDocuments(
                 r =>
                 {
-                    var messages = this.ttsService.EndGetActivitiesDocuments(r);
+                    var messages = this.ttsService.EndGetIdiomsDocuments(r);
 
                     this.synchronizationContext.Post(
                         s =>
@@ -89,7 +89,7 @@ namespace SpeechVideos.ViewModels
         private void deleteFile(TextDocument document)
         {
             textCollection.Remove(document);
-            this.ttsService.RemoveActivitiesDocument(document);
+            this.ttsService.RemoveIdiomsDocument(document);
         }
 
         private void addNewStory()
@@ -102,10 +102,9 @@ namespace SpeechVideos.ViewModels
                 doc1 = new TextDocument();
 
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter =
-               "TXT|*.video";
+            dialog.Filter ="Idiom|*" + TTService.IDIOM;
             dialog.InitialDirectory = "C:\\";
-            dialog.Title = "Select a text file";
+            dialog.Title = "Select a Idiom file";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 string fname = dialog.FileName;
@@ -113,6 +112,7 @@ namespace SpeechVideos.ViewModels
                 doc.Subject = Path.GetFileNameWithoutExtension(fname);
                 doc.StudentId = doc1.StudentId;
                 doc.From = doc1.From;
+
                 string[] lines = File.ReadAllLines(fname);
                 foreach (string line in lines)
                 {
@@ -124,7 +124,7 @@ namespace SpeechVideos.ViewModels
                     }
 
                 }
-                this.ttsService.AddActivitiesDocument(doc);
+                this.ttsService.AddIdiomsDocument(doc);
                 textCollection.Add(doc);
             }
         }

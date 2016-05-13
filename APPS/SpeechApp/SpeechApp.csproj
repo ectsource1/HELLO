@@ -14,7 +14,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\deploy\</PublishUrl>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>ftp://ftp.ectedu.com/public_html/wpfapp/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -24,12 +25,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://localhost:83/</InstallUrl>
+    <InstallUrl>http://www.ectedu.com/wpfapp/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -177,6 +177,10 @@
       <Project>{717ba1a7-dd1d-4149-95f4-6bca1ac3eef1}</Project>
       <Name>SpeechControls</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeechIdioms\SpeechIdioms.csproj">
+      <Project>{4fe225a6-0847-415b-950d-250dacc6d1f8}</Project>
+      <Name>SpeechIdioms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeechInfrastructure\SpeechInfrastructure.csproj">
       <Project>{8635c78d-ec1a-4748-a27c-09206066eae8}</Project>
       <Name>SpeechInfrastructure</Name>
@@ -196,10 +200,6 @@
     <ProjectReference Include="..\SpeechWords\SpeechWords.csproj">
       <Project>{d6ff65bd-7e55-4b3a-8785-0a18797e2fff}</Project>
       <Name>SpeechWords</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SpeechWritting\SpeechWritting.csproj">
-      <Project>{6100f293-8fd3-4cb9-9df9-1947230943d4}</Project>
-      <Name>SpeechWritting</Name>
     </ProjectReference>
     <ProjectReference Include="..\VoiceRecorder.Audio\VoiceRecorder.Audio.csproj">
       <Project>{7fd5a356-e699-4519-9cf0-0f73cd8a76bf}</Project>

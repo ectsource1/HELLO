@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SpeechSTT.Views.STTNavigationItemView"
+﻿<UserControl x:Class="SpeechIdioms.Views.IdiomsNavigationItemView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,7 +12,7 @@
             <ColumnDefinition />
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <RadioButton x:Name="NavigateToSTTRadioButton" GroupName="MainNavigation" Click="NavigateToSTTRadioButton_Click" 
-          AutomationProperties.AutomationId="STTRadioButton">Voice Recognition</RadioButton>
+        <RadioButton x:Name="NavigateToIdiomsRadioButton" GroupName="MainNavigation" Click="NavigateToIdiomsRadioButton_Click" 
+           AutomationProperties.AutomationId="IdiomsRadioButton">Common Idioms</RadioButton>
     </Grid>
 </UserControl>

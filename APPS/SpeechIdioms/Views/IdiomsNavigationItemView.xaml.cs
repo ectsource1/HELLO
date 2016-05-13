@@ -1,5 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved. See License.txt in the project root for license information.
-
+// Copyright (c) Microsoft Corporation. All rights reserved
 using System;
 using System.ComponentModel.Composition;
 using System.Windows;
@@ -7,18 +6,18 @@ using System.Windows.Controls;
 using Microsoft.Practices.Prism.Regions;
 using SpeechInfrastructure;
 
-namespace SpeechSTT.Views
+namespace SpeechIdioms.Views
 {
     [Export]
-    [ViewSortHint("12")]
-    public partial class STTNavigationItemView : UserControl, IPartImportsSatisfiedNotification
+    [ViewSortHint("06")]
+    public partial class IdiomsNavigationItemView : UserControl, IPartImportsSatisfiedNotification
     {
-        private static Uri sttViewUri = new Uri("/STTView", UriKind.Relative);
+        private static Uri idiomViewUri = new Uri("/IdiomListView", UriKind.Relative);
 
         [Import]
         public IRegionManager regionManager;
 
-        public STTNavigationItemView()
+        public IdiomsNavigationItemView()
         {
             InitializeComponent();
         }
@@ -39,12 +38,12 @@ namespace SpeechSTT.Views
 
         private void UpdateNavigationButtonState(Uri uri)
         {
-            this.NavigateToSTTRadioButton.IsChecked = (uri == sttViewUri);
+            this.NavigateToIdiomsRadioButton.IsChecked = (uri == idiomViewUri);
         }
 
-        private void NavigateToSTTRadioButton_Click(object sender, RoutedEventArgs e)
+        private void NavigateToIdiomsRadioButton_Click(object sender, RoutedEventArgs e)
         {
-            this.regionManager.RequestNavigate(RegionNames.MainContentRegion, sttViewUri);
+            this.regionManager.RequestNavigate(RegionNames.MainContentRegion, idiomViewUri);
         }
     }
 }

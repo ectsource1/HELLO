@@ -13,6 +13,6 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <RadioButton x:Name="NavigateToRecordRadioButton" GroupName="MainNavigation" Click="NavigateToRecordRadioButton_Click" 
-         Style="{StaticResource MainViewRadioButtonStyle}" AutomationProperties.AutomationId="RecordRadioButton">Speech Recording</RadioButton>
+          AutomationProperties.AutomationId="RecordRadioButton">Voice Recording</RadioButton>
     </Grid>
 </UserControl>

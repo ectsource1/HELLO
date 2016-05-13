@@ -1,5 +1,5 @@
 ﻿<UserControl 
-    x:Class="SpeechVideos.Views.VideoListView"
+    x:Class="SpeechIdioms.Views.IdiomListView"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,7 +9,7 @@
     xmlns:infra="clr-namespace:SpeechInfrastructure;assembly=SpeechInfrastructure" 
     xmlns:controls="clr-namespace:SpeechControls;assembly=SpeechControls" 
     mc:Ignorable="d"
-    d:DesignHeight="500" d:DesignWidth="400" x:Name="VideoList">
+    d:DesignHeight="500" d:DesignWidth="400" x:Name="storyList">
     <UserControl.RenderTransform>
         <RotateTransform/>
     </UserControl.RenderTransform>
@@ -121,7 +121,7 @@
             </ei:DataTrigger>
         </i:Interaction.Triggers>
 
-        <GroupBox Header="Video Activities" Grid.Row="1"  FontWeight="Bold" BorderBrush="#FF0F68A6" BorderThickness="4" Margin="5, 10, 5, 2">
+        <GroupBox Header="Cartoon Books" Grid.Row="1"  FontWeight="Bold" BorderBrush="#FF0F68A6" BorderThickness="4" Margin="5, 10, 5, 2">
             <ListBox x:Name="MessagesListBox"
                     ItemsSource="{Binding Messages}" 
                     ItemTemplate="{StaticResource StoryListItemTemplate}"
@@ -143,7 +143,7 @@
                                 VerticalAlignment="Center" 
                                 Height="Auto" 
                                 AutomationProperties.AutomationId="OpenButton">
-            Add New Activity
+            Add New Cartoon Book
         </Button>
 
         <ContentControl x:Name="Preview" Content="{Binding Messages.CurrentItem}"

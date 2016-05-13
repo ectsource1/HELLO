@@ -434,6 +434,7 @@ namespace SpeechWritting.ViewModels
         private void Save(object control)
         {
             Stop();
+            /*
             if (control != null) {
                 fsRichTextBox = (FsRichTextBox)control;
                 string key = TextDocument.RTE_KEY + ":"
@@ -444,7 +445,7 @@ namespace SpeechWritting.ViewModels
                            + TextDocument.RTE_KEY;
                 // Save the contents of the RichTextBox into the file.
                 fsRichTextBox.SaveRTEText(this.TextDocument.FileName, key);
-            }
+            }*/
         }
 
         private void SaveAs(object control)
@@ -463,6 +464,7 @@ namespace SpeechWritting.ViewModels
                 if (saveFile1.ShowDialog() == DialogResult.OK &&
                    saveFile1.FileName.Length > 0)
                 {
+                    /*
                     textDocument.Id  = Guid.NewGuid();
                     string key = TextDocument.RTE_KEY + ":"
                                + this.TextDocument.From + ":" 
@@ -471,7 +473,7 @@ namespace SpeechWritting.ViewModels
                                + textDocument.Id.ToString() + ":"
                                + TextDocument.RTE_KEY;
                     // Save the contents of the RichTextBox into the file.
-                    fsRichTextBox.SaveAsRTEText(saveFile1.FileName, key);
+                    fsRichTextBox.SaveAsRTEText(saveFile1.FileName, key);*/
 
                     loadFile(saveFile1.FileName);
                     
@@ -506,7 +508,7 @@ namespace SpeechWritting.ViewModels
                 using (StreamReader sr = new StreamReader(fileName))
                 {
                     string txt = sr.ReadToEnd();
-
+                    /*
                     if (txt.Contains(TextDocument.RTE_KEY) && txt.Contains("<FlowDocument"))
                     {
                         temp.Type = TextDocument.RTE;
@@ -528,7 +530,7 @@ namespace SpeechWritting.ViewModels
                         else
                         {
                             this.SaveClickable = false;
-                        }
+                        }*/
 
                     }
                     else if (txt.Contains("FlowDocument"))

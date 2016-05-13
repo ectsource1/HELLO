@@ -1,5 +1,8 @@
-// Copyright (c) Microsoft Corporation. All rights reserved. See License.txt in the project root for license information.
-
+//-------------------------------------------------
+// Copyright (c) ECT Education Group
+// Author: Charlie Jiang
+// Date  : 03/02/16
+//-------------------------------------------------
 using System;
 using System.Collections.Generic;
 using SpeechInfrastructure;
@@ -36,5 +39,14 @@ namespace SpeechTTS.Model
         void SaveActivitiesDocuments();
         void AddActivitiesDocument(TextDocument doc);
         void RemoveActivitiesDocument(TextDocument doc);
+
+        IAsyncResult BeginGetIdiomsDocuments(AsyncCallback callback, object userState);
+        IEnumerable<TextDocument> EndGetIdiomsDocuments(IAsyncResult result);
+        IAsyncResult BeginSendIdiomsDocument(TextDocument email, AsyncCallback callback, object userState);
+        void EndSendIdiomsDocument(IAsyncResult result);
+        TextDocument GetIdiomsDocument(Guid id);
+        void SaveIdiomsDocuments();
+        void AddIdiomsDocument(TextDocument doc);
+        void RemoveIdiomsDocument(TextDocument doc);
     }
 }
