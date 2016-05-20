@@ -28,7 +28,7 @@
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding NotAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="ID:"/>
-            <TextBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" Text="{Binding Id}"/>
+            <TextBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" Text="{Binding UserName}"/>
             <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="Password:"/>
             <PasswordBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" x:Name="passwordBox"/>
             <Button Content="Log in" Command="{Binding LoginCommand}"

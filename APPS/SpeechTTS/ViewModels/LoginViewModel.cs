@@ -2,13 +2,13 @@
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Regions;
 using System;
-using System.Windows;
+using System.IO;
 using System.Windows.Controls;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Windows.Input;
 using SpeechTTS.Auth;
-
+using SpeechInfrastructure;
 namespace SpeechTTS.ViewModels
 {
     [Export]
@@ -24,8 +24,7 @@ namespace SpeechTTS.ViewModels
         private bool needUpdate;
         private bool focusPoint;
         private bool notAuthenticated;
-
-        private int id;
+        private string userName = "ECT";
         private string _status;
          
         [ImportingConstructor]
@@ -41,6 +40,16 @@ namespace SpeechTTS.ViewModels
             needUpdate = false;
             focusPoint = false;
             notAuthenticated = true;
+
+            string fileName = AppDomain.CurrentDomain.BaseDirectory;
+            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+
+            if (File.Exists(fileName))
+            {
+                Personal person = Personal.read(fileName);
+                UserName = person.StudentId;
+            }
+            
         }
 
         public ICommand LoginCommand
@@ -63,16 +72,16 @@ namespace SpeechTTS.ViewModels
             get { return this.updatePasswd; }
         }
 
-        public int Id
+        public string UserName
         {
             get
             {
-                return this.id;
+                return this.userName;
             }
 
             set
             {
-                this.SetProperty(ref this.id, value);
+                this.SetProperty(ref this.userName, value);
             }
         }
 
@@ -111,6 +120,12 @@ namespace SpeechTTS.ViewModels
             Status = "";
             PasswordBox passwordBox = control as PasswordBox;
             string password = passwordBox.Password;
+
+            if (userName.Length < 6) return;
+            string sub = userName.Substring(5);
+            int id = -1;
+            if (!Int32.TryParse("-105", out id)) return;
+
             User user = _authService.AuthorizeComputer(id, password);
             if (user.Id == -1)
             {
@@ -125,7 +140,13 @@ namespace SpeechTTS.ViewModels
         {
             PasswordBox passwordBox = control as PasswordBox;
             string passwd = passwordBox.Password;
-            _authService.UpdatePasswd(Id, passwd);
+
+            if (userName.Length < 6) return;
+            string sub = userName.Substring(5);
+            int id = -1;
+            if (!Int32.TryParse("-105", out id)) return;
+
+            _authService.UpdatePasswd(id, passwd);
             FocusPoint = true;
             NotAuthenticated = false;
             NeedUpdate = false;
@@ -137,11 +158,16 @@ namespace SpeechTTS.ViewModels
             Status = "";
             PasswordBox passwordBox = control as PasswordBox;
             string clearTextPassword = passwordBox.Password;
+
+            if (userName.Length < 6) return;
+            string sub = userName.Substring(5);
+            int id = -1;
+            if (!Int32.TryParse(sub, out id)) return; 
+
             try
             {
                 //Validate credentials through the authentication service
-                if (Id == 0) Id = -1;
-                User user = _authService.AuthenticateUser(Id, clearTextPassword);
+                User user = _authService.AuthenticateUser(id, clearTextPassword);
 
                 if (user.Id == -1)
                 {

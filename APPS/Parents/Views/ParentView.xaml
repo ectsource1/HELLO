@@ -1,0 +1,86 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:infra="clr-namespace:SpeechInfrastructure;assembly=SpeechInfrastructure" 
+    x:Class="Parents.Views.ParentView"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="400" >
+    <UserControl.Resources>
+        <infra:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="White">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="0">
+            <RadioButton Content="父母必读"   FontWeight="Bold" IsChecked="{Binding Path=ReadmeIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="10, 0, 1, 2" />
+            <RadioButton Content="英文20句" FontWeight="Bold" IsChecked="{Binding Path=Dialog1IsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5, 0, 1, 2" />
+            <RadioButton Content="英文+30句" FontWeight="Bold" IsChecked="{Binding Path=Dialog2IsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5, 0, 1, 2" />
+            <RadioButton Content="英文详解"   FontWeight="Bold" IsChecked="{Binding Path=TranslateIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5, 0, 1, 2" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Margin="5" Grid.Row="1" HorizontalAlignment="Right" 
+                   Visibility="{Binding IsDialog, Converter={StaticResource booleanToVisibilityConverter}}">
+            <RadioButton Content="妈妈问孩子" FontWeight="Bold" IsChecked="{Binding Path=MomChecked, Mode=TwoWay}" GroupName="groupName2" Margin="10, 0, 1, 2" />
+            <RadioButton Content="爸爸问孩子" FontWeight="Bold" IsChecked="{Binding Path=DadChecked, Mode=TwoWay}" GroupName="groupName2" Margin="5, 0, 1, 2" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" MaxHeight="25" HorizontalAlignment="Left" Margin="25,0,0,0"
+                    Visibility="{Binding IsDialog, Converter={StaticResource booleanToVisibilityConverter}}">
+            <TextBlock Text="{Binding SelectedText, Mode=OneWay}" FontWeight="Bold" />
+            <ComboBox ItemsSource="{Binding RepeatOptions}"  SelectedItem="{Binding Repeat}" Margin="5,0,5,0"/>
+            <TextBox Text="{Binding RepeatCnt}" MinWidth="20" IsReadOnly="True" FontWeight="Bold" AutomationProperties.AutomationId="CntTxt"/>
+            <Button  Width="60"  Command="{Binding SpeakWordCommand}" Content="Repeat" IsEnabled="True"  Margin="10, 0, 10, 0"/>
+        </StackPanel>
+        
+        <GroupBox Header="父母必读"  Grid.Row="2" Margin="5,10,5,0" Visibility="{Binding ReadmeIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+            <TextBox TextWrapping="Wrap" IsReadOnly="True" Text="{Binding Readme, Mode=OneWay}" />
+        </GroupBox>
+        <GroupBox Header="家长英语20句" Grid.Row="2" Margin="5,10,5,0" Visibility="{Binding Dialog1IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+            <TextBox Text="{Binding Dialog1, Mode=OneWay}" MouseDoubleClick="MouseDbClick20" IsReadOnly="True" x:Name="Dialog20"/>
+        </GroupBox>
+        <GroupBox Header="家长英语+30句" Grid.Row="2" Margin="5,10,5,0" Visibility="{Binding Dialog2IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+            <TextBox Text="{Binding Dialog2, Mode=OneWay}" MouseDoubleClick="MouseDbClick30" IsReadOnly="True" x:Name="Dialog30"/>
+        </GroupBox>
+            <GroupBox Header="家长英语详解" Grid.Row="2" Margin="5,10,5,0" Visibility="{Binding TranslateIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+            <TextBox Text="{Binding Translate, Mode=OneWay}" IsReadOnly="True" />
+        </GroupBox>
+        
+        <GroupBox Grid.Row="2" Grid.Column="1" Visibility="{Binding IsDialog, Converter={StaticResource booleanToVisibilityConverter}}">
+            <StackPanel >
+                
+                <GroupBox Header="Volume:" FontWeight="Bold" Margin="2, 1, 2, 0">
+                    <Slider  Margin="1" IsSelectionRangeEnabled="True"  SelectionEnd="{Binding Volume, Mode=TwoWay}" Minimum="0" Maximum="100" Value="{Binding Volume, Mode=TwoWay}">
+                        <Slider.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Black" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkDarkBrushKey}" Color="Silver" />
+                        </Slider.Resources>
+                    </Slider>
+                </GroupBox>
+                <GroupBox Header="Speed:" FontWeight="Bold">
+                    <Slider  Margin="1" IsSelectionRangeEnabled="True"  SelectionEnd="{Binding Rate, Mode=TwoWay}" Minimum="0" Maximum="10" Value="{Binding Rate, Mode=TwoWay}">
+                        <Slider.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Black" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkDarkBrushKey}" Color="Silver" />
+                        </Slider.Resources>
+                    </Slider>
+                </GroupBox>
+                <Button  Width="60"  Command="{Binding SpeakCommand}"  Content="Speak" IsEnabled="{Binding SpeakClickable}"  Margin="2, 20, 2, 0"/>
+                <Button  Width="60"  Command="{Binding ResetCommand}"  Content="Reset" Margin="2, 30, 2, 0"/>
+                <Button  Width="60"  Command="{Binding StopCommand}"   Content="Stop" IsEnabled="{Binding StopClickable}" Margin="2, 20, 2, 0"/>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

@@ -3,10 +3,12 @@
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using SpeechIdioms.ViewModels;
+using System.Security.Permissions;
 
 namespace SpeechIdioms.Views
 {
     [Export("IdiomListView")]
+    [PrincipalPermission(SecurityAction.Demand)]
     public partial class IdiomListView : UserControl
     {
         public IdiomListView()

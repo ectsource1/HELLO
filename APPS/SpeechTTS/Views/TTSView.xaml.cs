@@ -20,7 +20,11 @@ namespace SpeechTTS.Views
         [Import]
         public TTSViewModel ViewModel
         {
-            set { this.DataContext = value; }
+            set {
+                this.DataContext = value;
+                TTSViewModel model = (TTSViewModel)this.DataContext;
+                model.setEditbox(EditBox);
+            }
         }
     }
 }

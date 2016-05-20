@@ -15,6 +15,7 @@
     </UserControl.RenderTransform>
     <UserControl.Resources>
         <infra:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
         <Storyboard x:Key="InTransition">
             <DoubleAnimation Storyboard.TargetProperty="(UserControl.RenderTransform).(RotateTransform.Angle)" To="-360" Duration="0:0:1"/>
         </Storyboard>
@@ -77,9 +78,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-
                 </Grid.RowDefinitions>
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -109,6 +108,7 @@
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="70"/>
@@ -120,8 +120,15 @@
                                                 ControlStoryboardOption="Play"/>
             </ei:DataTrigger>
         </i:Interaction.Triggers>
-
-        <GroupBox Header="Cartoon Books" Grid.Row="1"  FontWeight="Bold" BorderBrush="#FF0F68A6" BorderThickness="4" Margin="5, 10, 5, 2">
+        <GroupBox Header="父母必读" Visibility="{Binding ShowIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+            <TextBox Text="{Binding Readme, Mode=OneWay}" />
+        </GroupBox>
+        <TextBlock Text="卡通书" Grid.Row="1" Margin="5" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right"  Margin="0, 0, 10, 0">
+            <RadioButton Content="+" FontWeight="Bold" IsChecked="{Binding Path=ShowIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5"/>
+            <RadioButton Content="-" FontWeight="Bold" IsChecked="{Binding Path=NotShowIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5" />
+        </StackPanel>
+        <GroupBox Header="Cartoon Books" Grid.Row="2"  FontWeight="Bold" BorderBrush="#FF0F68A6" BorderThickness="4" Margin="5, 10, 5, 2">
             <ListBox x:Name="MessagesListBox"
                     ItemsSource="{Binding Messages}" 
                     ItemTemplate="{StaticResource StoryListItemTemplate}"
@@ -137,19 +144,19 @@
                 </ListBox.RenderTransform>
             </ListBox>
         </GroupBox>
-        <Button Grid.Row="2" Command="{Binding AddNewCommand}"
+        <Button Grid.Row="3" Command="{Binding AddNewCommand}"
                                 Margin="5,0, 20, 5" 
                                 HorizontalAlignment="Right" 
                                 VerticalAlignment="Center" 
                                 Height="Auto" 
                                 AutomationProperties.AutomationId="OpenButton">
-            Add New Cartoon Book
+            Add Cartoon Book
         </Button>
 
         <ContentControl x:Name="Preview" Content="{Binding Messages.CurrentItem}"
                         Margin="5,15,5,5"
                         ContentTemplate="{StaticResource TTSTemplate}"
-                        Grid.Row="3" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                        Grid.Row="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                         Visibility="{Binding Messages.CurrentItem, Converter={StaticResource ObjectToVisibility}}">
         </ContentControl>
     </Grid>

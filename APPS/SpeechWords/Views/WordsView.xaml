@@ -32,21 +32,22 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="4" Margin="10,5,0,0">
+            <TextBlock Text="Cartoon Books" FontWeight="Bold" Foreground="#8B008B"
+                            Margin="0,0,5,0" AutomationProperties.AutomationId="note1"/>
             <TextBlock Text="Student ID: " FontWeight="Bold" Margin="5,0,5,0" AutomationProperties.AutomationId="TextBlockTo"/>
             <TextBlock Text="{Binding TextDocument.StudentId}" AutomationProperties.AutomationId="TextBlockFromData" Margin="5,0,5,0"/>
             <TextBlock Text="Name: " FontWeight="Bold" AutomationProperties.AutomationId="TextBlockTo" Margin="35,0,5,0"/>
             <TextBlock Text="{Binding TextDocument.From}" AutomationProperties.AutomationId="TextBlockFromData"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="6" HorizontalAlignment="Right" Margin="10,5,10,0">
-            <TextBlock Text="Selected: " FontWeight="Bold" Margin="5,0,5,5" AutomationProperties.AutomationId="TextWord1" />
-            <TextBox MinWidth="200" Text="{Binding SelectedText}"  IsReadOnly="True" FontWeight="Bold" AutomationProperties.AutomationId="SelectedTxt"/>
+        <StackPanel Orientation="Horizontal" MaxHeight="25" Grid.Row="0" Grid.ColumnSpan="6" HorizontalAlignment="Right" Margin="10,5,10,0">
+            <TextBlock Text="{Binding SelectedText, Mode=OneWay}" FontWeight="Bold" MaxWidth="300" />
             <ComboBox ItemsSource="{Binding RepeatOptions}"  SelectedItem="{Binding Repeat}" Margin="5,0,5,0"/>
             <TextBox MinWidth="25" Text="{Binding RepeatCnt}"  IsReadOnly="True" FontWeight="Bold" AutomationProperties.AutomationId="CntTxt"/>
             <Button  Width="60"  Command="{Binding SpeakWordCommand}" Content="Repeat" IsEnabled="True"  Margin="10, 0, 0, 0"/>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Right" Margin="5,5,12,0">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="1" HorizontalAlignment="Left" Margin="5,5,12,0">
             <TextBlock Text="{Binding Message}" FontWeight="Bold" Margin="5,0,5,5" />
         </StackPanel>
 

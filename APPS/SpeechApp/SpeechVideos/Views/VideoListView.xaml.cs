@@ -3,10 +3,12 @@
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using SpeechVideos.ViewModels;
+using System.Security.Permissions;
 
 namespace SpeechVideos.Views
 {
     [Export("VideoListView")]
+    [PrincipalPermission(SecurityAction.Demand)]
     public partial class VideoListView : UserControl
     {
         public VideoListView()

@@ -12,7 +12,7 @@
 
     <UserControl.Resources>
         <infra:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
-
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
         <Style x:Key="TTSListContainerStyle" TargetType="ListBoxItem" BasedOn="{StaticResource DefaultListBoxItemStyle}">
             <Setter Property="Padding" Value="0"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -98,34 +98,40 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    
-
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="70"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Header="My Fun Stories" Grid.Row="1"  FontWeight="Bold" BorderBrush="#FF0F68A6" BorderThickness="4" Margin="5, 10, 5, 2">
+        <GroupBox Header="父母必读" Visibility="{Binding ShowIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+            <TextBox Text="{Binding Readme, Mode=OneWay}" />
+        </GroupBox>
+        <TextBlock Text="英文笔记" Grid.Row="1" Margin="5" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right"  Margin="0, 0, 10, 0">
+            <RadioButton Content="+" FontWeight="Bold" IsChecked="{Binding Path=ShowIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5"/>
+            <RadioButton Content="-" FontWeight="Bold" IsChecked="{Binding Path=NotShowIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5" />
+        </StackPanel>
+        <GroupBox Header="My Notes" Grid.Row="2"  FontWeight="Bold" BorderBrush="#FF0F68A6" BorderThickness="4" Margin="5, 0, 5, 2">
             <ListBox x:Name="MessagesListBox"
                     ItemsSource="{Binding Messages}" 
                     ItemTemplate="{StaticResource StoryListItemTemplate}"
                     ItemContainerStyle="{StaticResource TTSListContainerStyle}"
                     AutomationProperties.AutomationId="MessagesList"/>
         </GroupBox>
-        <Button Grid.Row="2" Command="{Binding AddNewCommand}"
+        <Button Grid.Row="3" Command="{Binding AddNewCommand}"
                                 Margin="5,0, 20, 5" 
                                 HorizontalAlignment="Right" 
                                 VerticalAlignment="Center" 
                                 Height="Auto" 
-                                AutomationProperties.AutomationId="OpenButton">Add New Story</Button>
+                                AutomationProperties.AutomationId="OpenButton">Add Notes</Button>
 
-        <ContentControl x:Name="Preview" Content="{Binding Messages.CurrentItem}"
-                        Margin="5,15,5,5"
-                        ContentTemplate="{StaticResource TTSTemplate}"
-                        Grid.Row="3" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+        <ContentControl Grid.Row="4" x:Name="Preview" Content="{Binding Messages.CurrentItem}"
+                        Margin="5,15,5,5" ContentTemplate="{StaticResource TTSTemplate}"
+                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                         Visibility="{Binding Messages.CurrentItem, Converter={StaticResource ObjectToVisibility}}">
         </ContentControl>
     </Grid>

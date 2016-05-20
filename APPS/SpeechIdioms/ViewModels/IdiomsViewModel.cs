@@ -24,6 +24,9 @@ namespace SpeechIdioms.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class IdiomsViewModel : BindableBase, INavigationAware
     {
+        private static string MISSED_IMG = "DataFiles\\mising.jpg";
+        private static string MISSED_MP3 = "DataFiles\\mising.mp3";
+
         private readonly DelegateCommand goBackCommand;
         private readonly DelegateCommand resetCommand;
         private readonly DelegateCommand mp3Command;
@@ -55,7 +58,6 @@ namespace SpeechIdioms.ViewModels
         private bool dialogIsChecked = false;
         private bool repeatSelected = false;
         private bool dialogSelected = false;
-        private bool stoped = false;
 
         private string selectedText;
         private string selectedText2;
@@ -108,7 +110,14 @@ namespace SpeechIdioms.ViewModels
                 5,
                 10,
                 15,
-                20
+                20,
+                25,
+                30,
+                35,
+                40,
+                45,
+                50,
+                100
             };
 
             fontSizeOptions = new List<int>
@@ -164,7 +173,7 @@ namespace SpeechIdioms.ViewModels
 
         void OnSpeakCompleted(object sender, EventArgs e)
         {
-            this.Stop();
+            //this.Stop();
 
             if (repeatSelected)
             {
@@ -182,13 +191,12 @@ namespace SpeechIdioms.ViewModels
             if (dialogSelected)
             {
 
-                if (dialogIdx < dialogCnt && !stoped)
+                if (dialogIdx < dialogCnt)
                 {
                     this.SpeakDialog();
                 }
                 else
                 {
-                    stoped = false;
                     this.DialogIdx = 0;
                     DialogSelected = false;
                     this.PreClickable = true;
@@ -199,8 +207,14 @@ namespace SpeechIdioms.ViewModels
                 }
             }
 
-
-            this.Message = "Done Reading!!";
+            if (transcriptIsChecked)
+            {
+                this.PreClickable = true;
+                this.NextClickable = true;
+                this.StopClickable = false;
+                this.ResumeClickable = false;
+                this.SpeakClickable = true;
+            }
         }
 
         void OnWord(object sender, SpeakProgressEventArgs e)
@@ -747,9 +761,9 @@ namespace SpeechIdioms.ViewModels
 
         private void Stop()
         {
-            //stoped = true;
             voice.SpeakAsyncCancelAll();
-
+            DialogIdx = 1000;
+            Message = "Stopped";
             this.PreClickable = true;
             this.NextClickable = true;
             this.StopClickable = false;
@@ -760,6 +774,9 @@ namespace SpeechIdioms.ViewModels
         private void Pre()
         {
             TranscriptIsChecked = true;
+            Sentence = "";
+            Gender = "";
+
             TextDocument tmp = (TextDocument)this.TextDocument.Clone();
             if (tmp.Idx > 0 )
             {
@@ -768,7 +785,14 @@ namespace SpeechIdioms.ViewModels
                 tmp.SubSubject = tmp.SubjectList[tmp.Idx];
 
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\") + 1);
-                string imgName = folderName + tmp.ImgList[tmp.Idx];
+                string imgName = tmp.ImgList[tmp.Idx];
+                if (!imgName.Contains("\\"))
+                    imgName = folderName + tmp.ImgList[tmp.Idx];
+                if (!File.Exists(imgName))
+                {
+                    string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                    imgName = appPath + MISSED_IMG;
+                }
 
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
@@ -779,7 +803,14 @@ namespace SpeechIdioms.ViewModels
 
                 if (tmp.MyAudioList.Count > 0)
                 {
-                    string audioName = folderName + tmp.MyAudioList[0];
+                    string audioName = tmp.MyAudioList[tmp.Idx];
+                    if (!audioName.Contains("\\"))
+                        audioName = folderName + tmp.MyAudioList[tmp.Idx];
+                    if (!File.Exists(audioName))
+                    {
+                        string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                        audioName = appPath + MISSED_MP3;
+                    }
                     audio.Source = new Uri(audioName);
                     audio.LoadedBehavior = MediaState.Manual;
                     audio.UnloadedBehavior = MediaState.Manual;
@@ -792,6 +823,8 @@ namespace SpeechIdioms.ViewModels
 
         private void Next()
         {
+            Sentence = "";
+            Gender = "";
             TranscriptIsChecked = true;
             TextDocument tmp = (TextDocument)this.TextDocument.Clone();
             int cnt = tmp.TxtList.Count;
@@ -804,7 +837,14 @@ namespace SpeechIdioms.ViewModels
                 tmp.SubSubject = tmp.SubjectList[tmp.Idx];
 
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\")+1);
-                string imgName = folderName + tmp.ImgList[tmp.Idx];
+                string imgName = tmp.ImgList[tmp.Idx];
+                if (!imgName.Contains("\\"))
+                    imgName = folderName + tmp.ImgList[tmp.Idx];
+                if (!File.Exists(imgName))
+                {
+                    string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                    imgName = appPath + MISSED_IMG;
+                }
 
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
@@ -816,7 +856,14 @@ namespace SpeechIdioms.ViewModels
 
                 if (tmp.MyAudioList.Count > 0)
                 {
-                    string audioName = folderName + tmp.MyAudioList[0];
+                    string audioName = tmp.MyAudioList[tmp.Idx];
+                    if (!audioName.Contains("\\"))
+                        audioName = folderName + tmp.MyAudioList[tmp.Idx];
+                    if (!File.Exists(audioName))
+                    {
+                        string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                        audioName = appPath + MISSED_MP3;
+                    }
                     audio.Source = new Uri(audioName);
                     audio.LoadedBehavior = MediaState.Manual;
                     audio.UnloadedBehavior = MediaState.Manual;
@@ -888,7 +935,14 @@ namespace SpeechIdioms.ViewModels
                 temp.SubSubject = temp.SubjectList[0];
 
                 string folderName = temp.FileName.Substring(0, temp.FileName.LastIndexOf(@"\") + 1);
-                string imgName = folderName + temp.ImgList[0];
+                string imgName = temp.ImgList[0];
+                if (!imgName.Contains("\\"))
+                    imgName = folderName + temp.ImgList[0];
+                if (!File.Exists(imgName))
+                {
+                    string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                    imgName = appPath + MISSED_IMG;
+                }
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(imgName);
@@ -897,7 +951,14 @@ namespace SpeechIdioms.ViewModels
 
                 if (temp.MyAudioList.Count > 0)
                 {
-                    string audioName = folderName + temp.MyAudioList[0];
+                    string audioName = temp.MyAudioList[0];
+                    if (!audioName.Contains("\\"))
+                        audioName = folderName + temp.MyAudioList[0];
+                    if (!File.Exists(audioName))
+                    {
+                        string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                        audioName = appPath + MISSED_MP3;
+                    }
                     audio.Source = new Uri(audioName);
                     audio.LoadedBehavior = MediaState.Manual;
                     audio.UnloadedBehavior = MediaState.Manual;

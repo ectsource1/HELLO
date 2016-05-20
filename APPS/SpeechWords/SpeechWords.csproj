@@ -91,7 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ViewModels\StoryListViewModel.cs" />
-    <Compile Include="ViewModels\WorsViewModel.cs" />
+    <Compile Include="ViewModels\WordsViewModel.cs" />
     <Compile Include="Views\StoryListView.xaml.cs">
       <DependentUpon>StoryListView.xaml</DependentUpon>
     </Compile>

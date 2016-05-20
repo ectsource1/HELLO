@@ -3,6 +3,7 @@
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using SpeechTTS.ViewModels;
+//using System.Security.Permissions;
 
 namespace SpeechTTS.Views
 {

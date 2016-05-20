@@ -13,6 +13,6 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <RadioButton x:Name="NavigateToTTSRadioButton" GroupName="MainNavigation" Click="NavigateToTTSRadioButton_Click" 
-          AutomationProperties.AutomationId="TTSRadioButton">Fun Stories</RadioButton>
+          AutomationProperties.AutomationId="TTSRadioButton">My Notes</RadioButton>
     </Grid>
 </UserControl>

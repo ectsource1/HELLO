@@ -24,6 +24,8 @@ namespace SpeechVideos.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class VideosViewModel : BindableBase, INavigationAware
     {
+        private static string MISSED_FILE = "DataFiles\\mising.mp3";
+
         private readonly DelegateCommand goBackCommand;
         private readonly DelegateCommand resetCommand;
         private readonly DelegateCommand mp3Command;
@@ -133,8 +135,11 @@ namespace SpeechVideos.ViewModels
             fontSizeOptions = new List<int>
             {
                 12,
+                14,
                 16,
+                18,
                 20,
+                22,
                 24,
                 26,
                 28,
@@ -185,8 +190,6 @@ namespace SpeechVideos.ViewModels
 
         void OnSpeakCompleted(object sender, EventArgs e)
         {
-            this.Stop();
-
             if (repeatSelected)
             {
                 if (repeatCnt < repeat)
@@ -200,7 +203,7 @@ namespace SpeechVideos.ViewModels
                 }
             }
 
-            if (dialogSelected)
+            if (dialogIsChecked)
             {
                 if (dialogIdx < dialogCnt )
                 {
@@ -209,7 +212,6 @@ namespace SpeechVideos.ViewModels
                 else
                 {
                     this.DialogIdx = 0;
-                    DialogSelected = false;
                     this.PreClickable = true;
                     this.NextClickable = true;
                     this.StopClickable = false;
@@ -222,8 +224,18 @@ namespace SpeechVideos.ViewModels
                 }
             }
 
+            if (transcriptIsChecked || vocabIsChecked)
+            {
+                this.PreClickable = true;
+                this.NextClickable = true;
+                this.StopClickable = false;
+                this.ResumeClickable = false;
+                this.SpeakClickable = true;
 
-            this.Message = "Done Reading!!";
+                this.VideoPlayClickable = true;
+                this.VideoStopClickable = false;
+                this.VideoResumeClickable = false;
+            }
         }
 
         void OnWord(object sender, SpeakProgressEventArgs e)
@@ -602,7 +614,7 @@ namespace SpeechVideos.ViewModels
             set
             {
                 this.SetProperty(ref this.transcriptIsChecked, value);
-                NotTranscript = !transcriptIsChecked;
+                
             }
         }
 
@@ -629,6 +641,7 @@ namespace SpeechVideos.ViewModels
             set
             {
                 this.SetProperty(ref this.dialogIsChecked, value);
+                NotTranscript = dialogIsChecked || vocabIsChecked;
             }
         }
 
@@ -642,6 +655,7 @@ namespace SpeechVideos.ViewModels
             set
             {
                 this.SetProperty(ref this.vocabIsChecked, value);
+                NotTranscript = dialogIsChecked || vocabIsChecked;
             }
         }
 
@@ -806,6 +820,8 @@ namespace SpeechVideos.ViewModels
 
         private void Speak()
         {
+            SelectedText = "";
+            SelectedText2 = "";
             wordSpeak = false;
             this.PreClickable = false;
             this.NextClickable = false;
@@ -865,7 +881,7 @@ namespace SpeechVideos.ViewModels
         {
             Gender = textDocument.GenderList[dialogIdx];
             Sentence = textDocument.SentenceList[dialogIdx];
-            if (gender.Equals("M"))
+            if (gender.Contains("A"))
                  voice.SelectVoiceByHints(VoiceGender.Male);
             else
                  voice.SelectVoiceByHints(VoiceGender.Female);
@@ -939,6 +955,8 @@ namespace SpeechVideos.ViewModels
         {
             voice.SpeakAsyncCancelAll();
 
+            DialogIdx = 1000;
+
             this.PreClickable = true;
             this.NextClickable = true;
             this.StopClickable = false;
@@ -959,9 +977,15 @@ namespace SpeechVideos.ViewModels
                 tmp.Text = tmp.TxtList[tmp.Idx];
 
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\") + 1);
-                string imgName = folderName + tmp.ImgList[tmp.Idx];
-
-                viewer.Source = new Uri(imgName);
+                string videoName = tmp.ImgList[tmp.Idx];
+                if (!videoName.Contains("\\"))
+                    videoName = folderName + tmp.ImgList[tmp.Idx];
+                if (!File.Exists(videoName))
+                {
+                    string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                    videoName = appPath + MISSED_FILE;
+                }
+                viewer.Source = new Uri(videoName);
                 viewer.LoadedBehavior = MediaState.Manual;
                 viewer.UnloadedBehavior = MediaState.Manual;
                 viewer.Volume = videoVolume;
@@ -991,9 +1015,15 @@ namespace SpeechVideos.ViewModels
 
                 tmp.Text = tmp.TxtList[tmp.Idx];
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\")+1);
-                string imgName = folderName + tmp.ImgList[tmp.Idx];
-
-                viewer.Source = new Uri(imgName);
+                string videoName = tmp.ImgList[tmp.Idx];
+                if (!videoName.Contains("\\"))
+                    videoName = folderName + tmp.ImgList[tmp.Idx];
+                if (!File.Exists(videoName))
+                {
+                    string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                    videoName = appPath + MISSED_FILE;
+                }
+                viewer.Source = new Uri(videoName);
                 viewer.LoadedBehavior = MediaState.Manual;
                 viewer.UnloadedBehavior = MediaState.Manual;
                 viewer.Volume = videoVolume;
@@ -1120,8 +1150,15 @@ namespace SpeechVideos.ViewModels
                 temp.From = identity.Fullname;
 
                 string folderName = temp.FileName.Substring(0, temp.FileName.LastIndexOf(@"\") + 1);
-                string imgName = folderName + temp.ImgList[0];
-                viewer.Source = new Uri(imgName);
+                string videoName = temp.ImgList[0];
+                if (!videoName.Contains("\\"))
+                    videoName = folderName + temp.ImgList[0];
+                if (!File.Exists(videoName))
+                {
+                    string appPath = AppDomain.CurrentDomain.BaseDirectory;
+                    videoName = appPath + MISSED_FILE;
+                }
+                viewer.Source = new Uri(videoName);
                 viewer.LoadedBehavior   = MediaState.Stop;
                 viewer.UnloadedBehavior = MediaState.Manual;
                 viewer.Volume = videoVolume;

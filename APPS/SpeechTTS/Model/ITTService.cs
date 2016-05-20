@@ -11,8 +11,16 @@ namespace SpeechTTS.Model
 {
     public interface ITTService
     {
+        int getNumNotes();
+        int getNumCarts();
+        int getNumClasses();
+        int getNumIdioms();
+        int getNumSounds();
+        int getNumGrammars();
+
         string getAudioPath();
 
+        int FunIdx(TextDocument doc);
         IAsyncResult BeginGetFunDocuments(AsyncCallback callback, object userState);
         IEnumerable<TextDocument> EndGetFunDocuments(IAsyncResult result);
         IAsyncResult BeginSendFunDocument(TextDocument email, AsyncCallback callback, object userState);
@@ -22,6 +30,7 @@ namespace SpeechTTS.Model
         void AddFunDocument(TextDocument doc);
         void RemoveFunDocument(TextDocument doc);
 
+        int CardIdx(TextDocument doc);
         IAsyncResult BeginGetCardsDocuments(AsyncCallback callback, object userState);
         IEnumerable<TextDocument> EndGetCardsDocuments(IAsyncResult result);
         IAsyncResult BeginSendCardsDocument(TextDocument email, AsyncCallback callback, object userState);
@@ -31,6 +40,7 @@ namespace SpeechTTS.Model
         void AddCardsDocument(TextDocument doc);
         void RemoveCardsDocument(TextDocument doc);
 
+        int ClassIdx(TextDocument doc);
         IAsyncResult BeginGetActivitiesDocuments(AsyncCallback callback, object userState);
         IEnumerable<TextDocument> EndGetActivitiesDocuments(IAsyncResult result);
         IAsyncResult BeginSendActivitiesDocument(TextDocument email, AsyncCallback callback, object userState);
@@ -40,6 +50,7 @@ namespace SpeechTTS.Model
         void AddActivitiesDocument(TextDocument doc);
         void RemoveActivitiesDocument(TextDocument doc);
 
+        int IdiomIdx(TextDocument doc);
         IAsyncResult BeginGetIdiomsDocuments(AsyncCallback callback, object userState);
         IEnumerable<TextDocument> EndGetIdiomsDocuments(IAsyncResult result);
         IAsyncResult BeginSendIdiomsDocument(TextDocument email, AsyncCallback callback, object userState);
@@ -48,5 +59,26 @@ namespace SpeechTTS.Model
         void SaveIdiomsDocuments();
         void AddIdiomsDocument(TextDocument doc);
         void RemoveIdiomsDocument(TextDocument doc);
+
+        int SoundIdx(TextDocument doc);
+        IAsyncResult BeginGetSoundDocuments(AsyncCallback callback, object userState);
+        IEnumerable<TextDocument> EndGetSoundDocuments(IAsyncResult result);
+        IAsyncResult BeginSendSoundDocument(TextDocument email, AsyncCallback callback, object userState);
+        void EndSendSoundDocument(IAsyncResult result);
+        TextDocument GetSoundDocument(Guid id);
+        void SaveSoundDocuments();
+        void AddSoundDocument(TextDocument doc);
+        void RemoveSoundDocument(TextDocument doc);
+
+        int GrammarIdx(TextDocument doc);
+        IAsyncResult BeginGetGrammarDocuments(AsyncCallback callback, object userState);
+        IEnumerable<TextDocument> EndGetGrammarDocuments(IAsyncResult result);
+        IAsyncResult BeginSendGrammarDocument(TextDocument email, AsyncCallback callback, object userState);
+        void EndSendGrammarDocument(IAsyncResult result);
+        TextDocument GetGrammarDocument(Guid id);
+        void SaveGrammarDocuments();
+        void AddGrammarDocument(TextDocument doc);
+        void RemoveGrammarDocument(TextDocument doc);
+
     }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Regions;
@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Text.RegularExpressions;
 using SpeechTTS.Model;
 using SpeechInfrastructure;
 
@@ -29,6 +30,10 @@ namespace SpeechIdioms.ViewModels
         private readonly DelegateCommand<TextDocument> deleteTextCommand;
         private readonly DelegateCommand addNewCommand;
         private readonly ObservableCollection<TextDocument> textCollection;
+
+        private string readme = "";
+        private bool showIsChecked = false;
+        private bool notShowIsChecked = true;
 
         [ImportingConstructor]
         public IdiomListViewModel(ITTService ttsService, IRegionManager regionManager)
@@ -58,6 +63,46 @@ namespace SpeechIdioms.ViewModels
                         null);
                 },
                 null);
+
+            readme = "俚语也就是英语成语，在美国日常生活中，在电影电视里，英文歌词中，以及每天开车\n";
+            readme += "收音机里的节目中经常出现。掌握一定数量的俚语对于提高听力讲一口地道口语很有帮助。\n\n";
+            readme += "俚语模块收集300句最常用的俚语句法，供学生练习应用。每个俚语除了定义外，\n";
+            readme += "还配有图像，发音，例句和情景对话。课堂上也会有场景练习，以便加深理解。\n";
+            readme += "学生能在很轻松的环境中不知不觉地掌握主要常用俚语。";
+        }
+
+        public bool ShowIsChecked
+        {
+            get
+            {
+                return this.showIsChecked;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.showIsChecked, value);
+            }
+        }
+
+        public bool NotShowIsChecked
+        {
+            get
+            {
+                return this.notShowIsChecked;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.notShowIsChecked, value);
+            }
+        }
+
+        public String Readme
+        {
+            get
+            {
+                return this.readme;
+            }
         }
 
         public ICollectionView Messages { get; private set; }
@@ -88,6 +133,9 @@ namespace SpeechIdioms.ViewModels
 
         private void deleteFile(TextDocument document)
         {
+            int idx = ttsService.IdiomIdx(document);
+            if (idx < ttsService.getNumIdioms()) return;
+
             textCollection.Remove(document);
             this.ttsService.RemoveIdiomsDocument(document);
         }
@@ -118,7 +166,7 @@ namespace SpeechIdioms.ViewModels
                 {
                     if (line.Contains(TTService.TITLE_KEY))
                     {
-                        string[] col = line.Split(new char[] { TTService.SEP_CHAR });
+                        string[] col = Regex.Split(line, TTService.SEP_CHAR);
                         doc.Subject = col[1];
                         break;
                     }

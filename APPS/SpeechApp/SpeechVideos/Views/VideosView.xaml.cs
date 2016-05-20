@@ -17,7 +17,8 @@ namespace SpeechVideos.Views
 
         public VideosView()
         {
-            InitializeComponent(); timer = new DispatcherTimer();
+            InitializeComponent();
+            timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += new EventHandler(Timer_tick);
 

@@ -3,10 +3,12 @@
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using SpeechWords.ViewModels;
+using System.Security.Permissions;
 
 namespace SpeechWords.Views
 {
     [Export("StoryListView")]
+    [PrincipalPermission(SecurityAction.Demand)]
     public partial class StoryListView : UserControl
     {
         public StoryListView()

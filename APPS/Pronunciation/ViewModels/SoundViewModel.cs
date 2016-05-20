@@ -18,11 +18,11 @@ using SpeechTTS.Auth;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 
-namespace SpeechWords.ViewModels
+namespace Pronunciation.ViewModels
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class WordsViewModel : BindableBase, INavigationAware
+    public class SoundViewModel : BindableBase, INavigationAware
     {
         private readonly DelegateCommand goBackCommand;
         private readonly DelegateCommand resetCommand;
@@ -34,6 +34,11 @@ namespace SpeechWords.ViewModels
         private readonly DelegateCommand preCommand;
         private readonly DelegateCommand nextCommand;
         private readonly DelegateCommand speakWordCommand;
+
+        private readonly DelegateCommand playMediaCommand;
+        private readonly DelegateCommand pauseMediaCommand;
+        private readonly DelegateCommand resumeMediaCommand;
+        private readonly DelegateCommand stopMediaCommand;
 
         private readonly ITTService ttsService;
         private TextDocument textDocument;
@@ -51,6 +56,14 @@ namespace SpeechWords.ViewModels
         private bool stopClickable = false;
         private bool resumeClickable = false;
 
+        private bool mediaPlayClickable = true;
+        private bool mediaStopClickable = false;
+        private bool mediaResumeClickable = false;
+
+        private bool videoLoaded = false;
+        private bool videoNotLoaded = true;
+        private bool mediaLoaded = false;
+
         private string selectedText;
         private List<int> repeatOptions;
         private List<int> fontSizeOptions;
@@ -62,14 +75,17 @@ namespace SpeechWords.ViewModels
         private bool wordSpeak = false;
         private string message = "";
 
-        
+        private double mediaVolume = 1;
+        private double maxTime = 1;
+        private double mediaProgress = 0;
+
         FsRichTextBox fsRichTextBox;
-        MediaElement audio;
+        MediaElement media;
         Image image;
 
 
         [ImportingConstructor]
-        public WordsViewModel(ITTService ttsService)
+        public SoundViewModel(ITTService ttsService)
         {
             this.goBackCommand = new DelegateCommand(this.GoBack);
             this.resetCommand = new DelegateCommand(this.Reset);
@@ -80,8 +96,12 @@ namespace SpeechWords.ViewModels
             this.stopCommand = new DelegateCommand(this.Stop);
             this.preCommand = new DelegateCommand(this.Pre);
             this.nextCommand = new DelegateCommand(this.Next);
-
             this.speakWordCommand = new DelegateCommand(this.SpeakWord);
+
+            this.playMediaCommand = new DelegateCommand(this.PlayMedia);
+            this.pauseMediaCommand = new DelegateCommand(this.PauseMedia);
+            this.resumeMediaCommand = new DelegateCommand(this.ResumeMedia);
+            this.stopMediaCommand = new DelegateCommand(this.StopMedia);
 
             this.ttsService = ttsService;
 
@@ -120,14 +140,14 @@ namespace SpeechWords.ViewModels
 
         public void MediaEnded()
         {
-            audio.Position = TimeSpan.FromSeconds(0);
+            media.Position = TimeSpan.FromSeconds(0);
             wordSpeak = false;
             this.PreClickable = true;
             this.NextClickable = true;
             this.StopClickable = false;
             this.ResumeClickable = false;
             this.SpeakClickable = true;
-            audio.Stop();
+            media.Stop();
         }
 
         public void setEditbox(FsRichTextBox txtBox)
@@ -143,7 +163,7 @@ namespace SpeechWords.ViewModels
 
         public void setAudio(MediaElement maudio)
         {
-            audio = maudio;
+            media = maudio;
         }
 
         void OnSpeakCompleted(object sender, EventArgs e)
@@ -216,6 +236,26 @@ namespace SpeechWords.ViewModels
         public ICommand NextCommand
         {
             get { return this.nextCommand; }
+        }
+
+        public ICommand PlayMeddiaCommand
+        {
+            get { return this.playMediaCommand; }
+        }
+
+        public ICommand PauseMediaCommand
+        {
+            get { return this.pauseMediaCommand; }
+        }
+
+        public ICommand ResumeMediaCommand
+        {
+            get { return this.resumeMediaCommand; }
+        }
+
+        public ICommand StopMediaCommand
+        {
+            get { return this.stopMediaCommand; }
         }
 
 
@@ -413,6 +453,84 @@ namespace SpeechWords.ViewModels
             }
         }
 
+        public bool MediaPlayClickable
+        {
+            get
+            {
+                return this.mediaPlayClickable;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.mediaPlayClickable, value);
+            }
+        }
+
+        public bool MediaStopClickable
+        {
+            get
+            {
+                return this.mediaStopClickable;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.mediaStopClickable, value);
+            }
+        }
+
+        public bool MediaResumeClickable
+        {
+            get
+            {
+                return this.mediaResumeClickable;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.mediaResumeClickable, value);
+            }
+        }
+
+        public bool VideoLoaded
+        {
+            get
+            {
+                return this.videoLoaded;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.videoLoaded, value);
+            }
+        }
+
+        public bool VideoNotLoaded
+        {
+            get
+            {
+                return this.videoNotLoaded;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.videoNotLoaded, value);
+            }
+        }
+
+        public bool MediaLoaded
+        {
+            get
+            {
+                return this.mediaLoaded;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.mediaLoaded, value);
+            }
+        }
+
         public string Message
         {
             get
@@ -423,6 +541,47 @@ namespace SpeechWords.ViewModels
             set
             {
                 this.SetProperty(ref this.message, value);
+            }
+        }
+
+        public double MediaVolume
+        {
+            get
+            {
+                return this.mediaVolume;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.mediaVolume, value);
+                media.Volume = mediaVolume;
+            }
+        }
+
+        public double MaxTime
+        {
+            get
+            {
+                return this.maxTime;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.maxTime, value);
+            }
+        }
+
+        public double MediaProgress
+        {
+            get
+            {
+                return this.mediaProgress;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.mediaProgress, value);
+                media.Position = TimeSpan.FromSeconds(mediaProgress);
             }
         }
 
@@ -516,7 +675,7 @@ namespace SpeechWords.ViewModels
 
             if (selectedVoice.Equals("MyVoice"))
             {
-                audio.Play();
+                media.Play();
 
             } else {
                 voice.Volume = volume;
@@ -578,7 +737,7 @@ namespace SpeechWords.ViewModels
         private void Stop()
         {
             voice.SpeakAsyncCancelAll();
-            audio.Stop();
+            //audio.Stop();
 
             this.PreClickable = true;
             this.NextClickable = true;
@@ -587,31 +746,89 @@ namespace SpeechWords.ViewModels
             this.ResumeClickable = false;
         }
 
+        private void PlayMedia()
+        {
+            media.LoadedBehavior = MediaState.Manual;
+            wordSpeak = false;
+            this.PreClickable = false;
+            this.NextClickable = false;
+            this.StopClickable = false;
+            this.ResumeClickable = false;
+            this.SpeakClickable = false;
+
+            this.MediaPlayClickable = false;
+            this.MediaStopClickable = true;
+            this.MediaResumeClickable = false;
+            media.Play();
+        }
+
+        private void PauseMedia()
+        {
+            media.Pause();
+            this.MediaPlayClickable = false;
+            this.MediaStopClickable = false;
+            this.MediaResumeClickable = true;
+        }
+
+        private void ResumeMedia()
+        {
+            media.Play();
+            this.MediaPlayClickable = false;
+            this.MediaStopClickable = true;
+            this.MediaResumeClickable = false;
+        }
+
+        private void StopMedia()
+        {
+            media.Stop();
+
+            this.PreClickable = true;
+            this.NextClickable = true;
+            this.StopClickable = false;
+            this.ResumeClickable = false;
+            this.SpeakClickable = true;
+
+            this.MediaPlayClickable = true;
+            this.MediaStopClickable = false;
+            this.MediaResumeClickable = false;
+        }
+
         private void Pre()
         {
             TextDocument tmp = (TextDocument)this.TextDocument.Clone();
-            if (tmp.Idx > 0 )
-            {
-                tmp.Idx -= 1;
-                tmp.Text = tmp.TxtList[tmp.Idx];
-
-                string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\") + 1);
-                string imgName = folderName + tmp.ImgList[tmp.Idx];
-
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(imgName);
-                bitmap.EndInit();
-                image.Source = bitmap;
-                this.TextDocument = tmp;
-
-                string audioName = folderName + tmp.MyAudioList[0];
-                audio.Source = new Uri(audioName);
-                audio.LoadedBehavior = MediaState.Manual;
-                audio.UnloadedBehavior = MediaState.Manual;
-                Speak();
-            }
+            tmp.Idx -= 1;
+            if (tmp.Idx < 0) tmp.Idx = tmp.TxtList.Count - 1;
             
+            tmp.Text = tmp.TxtList[tmp.Idx];
+            tmp.SubSubject = tmp.SubjectList[tmp.Idx];
+
+            string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\") + 1);
+            string imgName = folderName + tmp.ImgList[tmp.Idx];
+
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri(imgName);
+            bitmap.EndInit();
+            image.Source = bitmap;
+            this.TextDocument = tmp;
+
+            string audioName = folderName + tmp.MyAudioList[tmp.Idx];
+            media.Source = new Uri(audioName);
+            media.LoadedBehavior = MediaState.Manual;
+            media.UnloadedBehavior = MediaState.Manual;
+            if (audioName.Contains("mp4"))
+            {
+                 VideoLoaded = true;
+                 VideoNotLoaded = false;
+            } else
+            {
+                 VideoLoaded = false;
+                 VideoNotLoaded = true;
+            }
+                     
+            MediaLoaded = true;
+                
+            media.Play();  
         }
 
         private void Next()
@@ -624,6 +841,8 @@ namespace SpeechWords.ViewModels
                 if (tmp.Idx >= cnt) tmp.Idx = 0;
 
                 tmp.Text = tmp.TxtList[tmp.Idx];
+                tmp.SubSubject = tmp.SubjectList[tmp.Idx];
+
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\")+1);
                 string imgName = folderName + tmp.ImgList[tmp.Idx];
 
@@ -633,13 +852,26 @@ namespace SpeechWords.ViewModels
                 bitmap.EndInit();
                 image.Source = bitmap;
 
+                string mediaName = folderName + tmp.MyAudioList[tmp.Idx];
+                if (mediaName.Contains(".mp4"))
+                {
+                    VideoLoaded = true;
+                    VideoNotLoaded = false;
+                }
+                else
+                {
+                    VideoLoaded = false;
+                    VideoNotLoaded = true;
+                }
+                MediaLoaded = true;
+                media.Source = new Uri(mediaName);
+                media.LoadedBehavior = MediaState.Manual;
+                media.UnloadedBehavior = MediaState.Manual;
+                media.Volume = mediaVolume;
                 this.TextDocument = tmp;
-
-                string audioName = folderName + tmp.MyAudioList[0];
-                audio.Source = new Uri(audioName);
-                audio.LoadedBehavior = MediaState.Manual;
-                audio.UnloadedBehavior = MediaState.Manual;
-                Speak();
+                
+                media.Play();
+  
             }
             
         }
@@ -694,7 +926,7 @@ namespace SpeechWords.ViewModels
             var textId = GetRequestedTextId(navigationContext);
             if (textId.HasValue)
             {
-                TextDocument temp = this.ttsService.GetCardsDocument(textId.Value);
+                TextDocument temp = this.ttsService.GetSoundDocument(textId.Value);
                 CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
                 if (customPrincipal == null)
                     throw new ArgumentException("Must set CustomPrincipal object on startup.");
@@ -711,22 +943,26 @@ namespace SpeechWords.ViewModels
                 bitmap.EndInit();
                 image.Source = bitmap;
 
-                if (temp.MyAudioList.Count > 0)
+                string mediaName = folderName + temp.MyAudioList[0];
+                media.Source = new Uri(mediaName);
+                media.LoadedBehavior = MediaState.Manual;
+                media.UnloadedBehavior = MediaState.Manual;
+                media.Volume = mediaVolume;
+                this.TextDocument = temp;
+                if (mediaName.Contains(".mp4"))
                 {
-                    string audioName = folderName + temp.MyAudioList[0];
-                    audio.Source = new Uri(audioName);
-                    audio.LoadedBehavior = MediaState.Manual;
-                    audio.UnloadedBehavior = MediaState.Manual;
-                    if (voiceOptions.Count < 3)
-                    {
-                        VoiceOptions.Add("MyVoice");
-                    } 
-
-                } else {
-                    if (voiceOptions.Count > 2)
-                        VoiceOptions.Remove("MyVoice");
+                    VideoLoaded = true;
+                    videoNotLoaded = false;
+                } else
+                {
+                    VideoLoaded = false;
+                    VideoNotLoaded = true;
                 }
-                
+
+                MediaLoaded = true;
+
+                media.Play();
+
                 this.TextDocument = temp;
             }
 

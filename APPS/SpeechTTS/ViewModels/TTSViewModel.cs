@@ -25,15 +25,14 @@ namespace SpeechTTS.ViewModels
     {
         private readonly DelegateCommand goBackCommand;
         private readonly DelegateCommand resetCommand;
-        private readonly DelegateCommand<object> mp3Command;
-        private readonly DelegateCommand<object> speakCommand;
+        private readonly DelegateCommand mp3Command;
+        private readonly DelegateCommand speakCommand;
         private readonly DelegateCommand pauseCommand;
         private readonly DelegateCommand resumeCommand;
         private readonly DelegateCommand stopCommand;
-        private readonly DelegateCommand<object> updateCommand;
-        //private readonly DelegateCommand loadDocCommand;
-        private readonly DelegateCommand<object> saveCommand;
-        private readonly DelegateCommand<object> saveAsCommand;
+        private readonly DelegateCommand updateCommand;
+        private readonly DelegateCommand saveCommand;
+        private readonly DelegateCommand saveAsCommand;
         private readonly DelegateCommand speakWordCommand;
 
         private readonly ITTService ttsService;
@@ -41,6 +40,7 @@ namespace SpeechTTS.ViewModels
         private IRegionNavigationJournal navigationJournal;
         private const string TextIdKey = "TextId";
         private List<string> voiceOptions;
+        private List<int> fontSizeOptions;
         private string selectedVoice="Male";
         private int volume = 100;
         private int rate = 10;
@@ -53,26 +53,26 @@ namespace SpeechTTS.ViewModels
         private List<int> repeatOptions;
         private int repeat = 5;
         private int repeatCnt = 0;
+        private int fontSize = 16;
 
         SpeechSynthesizer voice;
-        FsRichTextBox fsRichTextBox;
         private bool wordSpeak = false;
         private string message = "";
+        FsRichTextBox editBox;
 
         [ImportingConstructor]
         public TTSViewModel(ITTService ttsService)
         {
             this.goBackCommand = new DelegateCommand(this.GoBack);
             this.resetCommand = new DelegateCommand(this.Reset);
-            this.mp3Command = new DelegateCommand<object>(this.Mp3);
-            this.speakCommand = new DelegateCommand<object>(this.Speak);
+            this.mp3Command = new DelegateCommand(this.Mp3);
+            this.speakCommand = new DelegateCommand(this.Speak);
             this.pauseCommand = new DelegateCommand(this.Pause);
             this.resumeCommand = new DelegateCommand(this.Resume);
             this.stopCommand = new DelegateCommand(this.Stop);
-            this.updateCommand = new DelegateCommand<object>(this.Update);
-            this.saveCommand = new DelegateCommand<object>(this.Save);
-            this.saveAsCommand = new DelegateCommand<object>(this.SaveAs);
-            //this.loadDocCommand = new DelegateCommand(this.LoadDocument);
+            this.updateCommand = new DelegateCommand(this.Update);
+            this.saveCommand = new DelegateCommand(this.Save);
+            this.saveAsCommand = new DelegateCommand(this.SaveAs);
 
             this.speakWordCommand = new DelegateCommand(this.SpeakWord);
 
@@ -89,7 +89,25 @@ namespace SpeechTTS.ViewModels
                 5,
                 10,
                 15,
-                20
+                20,
+                25,
+                50,
+                100
+            };
+
+            fontSizeOptions = new List<int>
+            {
+                12,
+                14,
+                16,
+                18,
+                20,
+                22,
+                24,
+                26,
+                28,
+                30,
+                32
             };
 
             voice = new SpeechSynthesizer();
@@ -118,10 +136,18 @@ namespace SpeechTTS.ViewModels
             this.Message = "Done Reading!!";
         }
 
+        
+
+        public void setEditbox(FsRichTextBox txtBox)
+        {
+            editBox = txtBox;
+            editBox.FontSize = fontSize;
+        }
+
         void OnWord(object sender, SpeakProgressEventArgs e)
         {
             if (!wordSpeak)
-                fsRichTextBox.HighlightWordInRichTextBox(e.Text);
+                editBox.HighlightWordInRichTextBox(e.Text);
         }
 
         public ICommand GoBackCommand
@@ -206,6 +232,28 @@ namespace SpeechTTS.ViewModels
             get
             {
                 return this.repeatOptions;
+            }
+        }
+
+        public List<int> FontSizeOptions
+        {
+            get
+            {
+                return this.fontSizeOptions;
+            }
+        }
+
+        public int FontSize
+        {
+            get
+            {
+                return this.fontSize;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.fontSize, value);
+                editBox.FontSize = fontSize;
             }
         }
 
@@ -354,18 +402,12 @@ namespace SpeechTTS.ViewModels
             this.Volume = 100;
         }
 
-        private void Mp3(object control)
+        private void Mp3()
         {
             wordSpeak = false;
             this.StopClickable = true;
             this.ResumeClickable = false;
             this.SpeakClickable = false;
-
-            if (control != null)
-            {
-                fsRichTextBox = (FsRichTextBox)control;
-                //fsRichTextBox.FontSize = 16;
-            }
 
             this.Message = "Saving To MP3...";
 
@@ -409,19 +451,12 @@ namespace SpeechTTS.ViewModels
             }
         }
 
-        private void Speak(object control)
+        private void Speak()
         {
             wordSpeak = false;
             this.StopClickable = true;
             this.ResumeClickable = false;
             this.SpeakClickable = false;
-
-            if (control != null) 
-            {
-                fsRichTextBox = (FsRichTextBox)control;
-                fsRichTextBox.FontSize = 16;
-                //this.richTextBox1.rosoftSelectionFont = newFont; 20
-            }
 
             this.Message = "Reading Text...";
 
@@ -439,7 +474,7 @@ namespace SpeechTTS.ViewModels
             voice.Rate = rate - 10;
 
             voice.SetOutputToDefaultAudioDevice();  
-            fsRichTextBox.ResetPointer();
+            editBox.ResetPointer();
             voice.SpeakAsync(PlainText());
         }
 
@@ -496,71 +531,40 @@ namespace SpeechTTS.ViewModels
             this.ResumeClickable = false;
         }
 
-        private void Update(object control)
+        private void Update()
         {
             Stop();
-            if (control != null)
-            {
-                fsRichTextBox = (FsRichTextBox)control;
-                fsRichTextBox.UpdateDocumentBindings();
-            }
+            editBox.UpdateDocumentBindings();   
         }
 
-        private void Save(object control)
+        private void Save()
         {
-            FsRichTextBox textBox = (FsRichTextBox)control;
-            File.WriteAllText(textDocument.FileName, textBox.GetPlainText());
+            string txt = TTService.TITLE_KEY + textDocument.Subject + "\n" + PlainText();
+            File.WriteAllText(textDocument.FileName, txt);
         }
 
-        private void SaveAs(object control)
+        private void SaveAs()
         {
             Stop();
-            if (control != null)
-            {
-                fsRichTextBox = (FsRichTextBox)control;
-                SaveFileDialog saveFile1 = new SaveFileDialog();
+            
+            SaveFileDialog saveFile1 = new SaveFileDialog();
 
-                // Initialize the SaveFileDialog to specify the RTF extention for the file.
-                saveFile1.DefaultExt = "*.txt";
-                saveFile1.Filter = "TXT Files|*.txt";
+            saveFile1.Filter = "Notes Files|*" + TTService.STORY;
 
-                // Determine whether the user selected a file name from the saveFileDialog. 
-                if (saveFile1.ShowDialog() == DialogResult.OK &&
-                   saveFile1.FileName.Length > 0)
-                {
-                    File.WriteAllText(saveFile1.FileName, PlainText());
-                    // Save the contents of the RichTextBox into the file.
-                    //fsRichTextBox.SaveAsRTEText(saveFile1.FileName, "");
-                    //fsRichTextBox.
-                }
+            string txt = TTService.TITLE_KEY + textDocument.Subject + "\n" + PlainText();
+
+            // Determine whether the user selected a file name from the saveFileDialog. 
+            if (saveFile1.ShowDialog() == DialogResult.OK &&
+                   saveFile1.FileName.Length > 0) {
+                    File.WriteAllText(saveFile1.FileName, txt);
             }
+            
         }
 
         string PlainText()
         {
-            return fsRichTextBox.GetPlainText();
+            return editBox.GetPlainText();
         }
-
-        /*
-        private void LoadDocument()
-        {
-            Stop();
-            TextDocument temp = (TextDocument)textDocument.Clone();
-            temp.Type = "RTF";
-            temp.Text = "<FlowDocument PagePadding=\"5,0,5,0\" AllowDrop=\"True\" "
-                + "xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">"
-                + "<Paragraph>Text generated by app back-end</Paragraph></FlowDocument>";
-
-            CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
-            if (customPrincipal == null)
-                throw new ArgumentException("Must set CustomPrincipal object on startup.");
-
-            //Authenticate the user
-            CustomIdentity identity = customPrincipal.Identity;
-            temp.StudentId = identity.Name;
-            temp.From = identity.Fullname;
-            this.TextDocument = temp;
-        }*/
 
         private Guid? GetRequestedTextId(NavigationContext navigationContext)
         {
@@ -587,19 +591,6 @@ namespace SpeechTTS.ViewModels
 
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
         {
-            // todo: 13 - Determining if a view or view model handles the navigation request
-            //
-            // By implementing IsNavigationTarget, this view model can let the region
-            // navigation service know that it is the item sought for navigation. 
-            // 
-            // If this view model is the one that was built to display the requested
-            // EmailId (as a result of a prior navigation request), then this
-            // method will return true.  
-            //
-            // Otherwise, it will return false and if no other EmailViewModel type returns true 
-            // then the navigation service knows that no EmailView is already available that 
-            // shows that email.  In this case, the navigation service will request a new one 
-            // be constructed and added to the region.
             if (this.textDocument == null)
             {
                 return true;
