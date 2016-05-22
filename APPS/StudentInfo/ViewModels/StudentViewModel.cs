@@ -84,9 +84,11 @@ namespace StudentInfo.ViewModels
 
         private void Save()
         {
+            Message = "";
             string fileName = AppDomain.CurrentDomain.BaseDirectory;
             fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
             Personal.write(personData, fileName);
+            Message = "Saved Successfully !";
         }
 
         public Personal PersonData

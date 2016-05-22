@@ -163,5 +163,10 @@ namespace SpeechInfrastructure
             return (s1 + delimiter + s2);
         }
 
+        public string append3String(string s1, string s2, string s3, string delimiter)
+        {
+            return (s1 + delimiter + s2 + delimiter + s3);
+        }
+
     }
 }

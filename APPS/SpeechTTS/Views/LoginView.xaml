@@ -19,10 +19,15 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left">
-            <TextBlock Text="ECT" TextWrapping="NoWrap" Foreground="#FFFFFF" FontSize="36" Opacity="0.85"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="40" Width="75" TextAlignment="Left" FontWeight="Bold" Margin="1,1,1,5"/>
-            <TextBlock Text="艾琳国际英语学校" TextWrapping="NoWrap" Foreground="#8B008B" FontSize="36" Opacity="0.85" Height="40" TextAlignment="Left" FontWeight="Bold" />
-            <TextBlock Text="教学专用软件" TextWrapping="NoWrap" Foreground="#FFFFFF" FontSize="20" FontStyle="Italic" Opacity="0.85" Height="25" TextAlignment="Left" FontWeight="Bold" Margin="15,5,1,5"/>
-            <TextBlock Text="{Binding Status}" TextWrapping="NoWrap" />
+            <TextBlock Text="ECT" TextWrapping="NoWrap" Foreground="#FFFFFF" FontSize="36" Opacity="0.85"  
+                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="40" Width="75" 
+                       TextAlignment="Left" FontWeight="Bold" Margin="1,1,1,5"/>
+            <TextBlock Text="艾琳国际英语学校" TextWrapping="NoWrap" Foreground="#8B008B" FontSize="36" 
+                       Opacity="0.85" Height="40" TextAlignment="Left" FontWeight="Bold" />
+            <TextBlock Text="教学专用软件" TextWrapping="NoWrap" Foreground="#FFFFFF" FontSize="20" FontStyle="Italic" 
+                       Opacity="0.85" Height="25" TextAlignment="Left" FontWeight="Bold" Margin="15,5,1,5"/>
+            <TextBlock Text="{Binding Status}" TextWrapping="NoWrap" Margin="50,0,0,0" 
+                       HorizontalAlignment="Right"  Foreground="Red" />
 
         </StackPanel>
 
@@ -31,7 +36,7 @@
             <TextBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" Text="{Binding UserName}"/>
             <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="Password:"/>
             <PasswordBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" x:Name="passwordBox"/>
-            <Button Content="Log in" Command="{Binding LoginCommand}"
+            <Button Content="Log in" Command="{Binding LoginCommand}" IsEnabled="{Binding NotLogin}"
                     CommandParameter="{Binding ElementName=passwordBox}" Margin="2,2,8,2"
                     HorizontalAlignment="Center"/>
         </StackPanel>
@@ -39,13 +44,14 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding FocusPoint, Converter={StaticResource booleanToVisibilityConverter}}" Margin="-63,0,0,0">
             <Button Content="ECT"  Margin="2,2,8,2" HorizontalAlignment="Center"/>
         </StackPanel>
-        
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{Binding NeedUpdate, Converter={StaticResource booleanToVisibilityConverter}}" Margin="-63,0,0,0">
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"  Margin="-63,0,0,0"
+                    Visibility="{Binding NeedUpdate, Converter={StaticResource booleanToVisibilityConverter}}" >
             <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="ID:"/>
             <TextBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" Text="{Binding Id}" x:Name="id1"/>
             <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="Password:"/>
             <PasswordBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" x:Name="passwordBox1"/>
-            <Button Content="Change Password" Command="{Binding UpdatePasswd}"
+            <Button Content="Change Password" Command="{Binding UpdatePasswd}" 
                     CommandParameter="{Binding ElementName=passwordBox1}" Margin="2,2,8,2"
                     HorizontalAlignment="Center"/>
         </StackPanel>
@@ -55,9 +61,8 @@
             <TextBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" Text="{Binding Id}" x:Name="id2"/>
             <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" Text="Password:"/>
             <PasswordBox VerticalAlignment="Center" MinWidth="50" Margin="2,2,2,2" x:Name="passwordBox2"/>
-            <Button Content="Authorize This Computer" Command="{Binding AuthCommand}"  
-                    CommandParameter="{Binding ElementName=passwordBox2}" Margin="2,2,8,2"
-                    HorizontalAlignment="Center"/>
+            <Button Content="Authorize This Computer" Command="{Binding AuthCommand}"  IsEnabled="{Binding NotLogin}"
+                    CommandParameter="{Binding ElementName=passwordBox2}" Margin="2,2,8,2" HorizontalAlignment="Center"/>
         </StackPanel>
 
     </Grid>

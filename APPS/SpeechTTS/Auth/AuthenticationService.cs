@@ -89,6 +89,7 @@ namespace SpeechTTS.Auth
             if (!user.Macid.Equals(macid))
             {
                 user.Id = -1;
+                user.Macid = macid;
                 user.Name = "Invalid Computer";
             }
                 
@@ -103,7 +104,6 @@ namespace SpeechTTS.Auth
             string value = client.DownloadString(url);
             json = value;
             dynamic d = JsonConvert.DeserializeObject<dynamic>(json);
-            string macid = GetMACAddress();
 
             User user = new User();
             if (d == null)
@@ -140,7 +140,9 @@ namespace SpeechTTS.Auth
                 mo.Dispose();
             }
 
-            //MACAddress = MACAddress.Replace(":", "");
+            if (MACAddress.Length > 15)
+               MACAddress = MACAddress.Substring(0, 15);
+
             return MACAddress;
         }
     }

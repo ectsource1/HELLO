@@ -111,8 +111,8 @@ namespace Parents.ViewModels
                 
             }
 
-            greeting += ", Welcome to the Parents-Must-Read Module!";
-            voice.SpeakAsync(greeting);
+            //greeting += ", Welcome to the Parents-Must-Read Module!";
+            //voice.SpeakAsync(greeting);
            
         }
 

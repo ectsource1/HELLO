@@ -89,6 +89,8 @@
   <ItemGroup>
     <Compile Include="Auth\AuthenticationService.cs" />
     <Compile Include="Auth\CustomIdentity.cs" />
+    <Compile Include="Model\EctDataService.cs" />
+    <Compile Include="Model\IEctDataService.cs" />
     <Compile Include="Model\TTService.cs" />
     <Compile Include="Model\ITTService.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

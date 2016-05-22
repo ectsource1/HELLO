@@ -1,0 +1,209 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:infra="clr-namespace:SpeechInfrastructure;assembly=SpeechInfrastructure" 
+    x:Class="ClassProject.Views.ProjectView"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="400" >
+    <UserControl.Resources>
+        <infra:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+        <Style x:Key="ModuleContainerStyle" TargetType="ListBoxItem" BasedOn="{StaticResource DefaultListBoxItemStyle}">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+        <DataTemplate x:Key="PageListItemTemplate">
+            <Border BorderBrush="Gray" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="{Binding SubTitle}" Grid.Row="0"/>
+                    <TextBlock Text="{Binding Type}" HorizontalAlignment="Left"   Grid.Column="1"/>
+
+                    <StackPanel Grid.Column="3"  Orientation="Horizontal">
+                        <Button Command="{Binding DataContext.LoadXmlCommand, ElementName=LayoutRoot}"
+                                CommandParameter="{Binding}"
+                                Margin="5,0" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Height="Auto" 
+                                AutomationProperties.AutomationId="OpenButton">
+                            Load
+                        </Button>
+                        <Button Command="{Binding DataContext.DeleteXmlCommand, ElementName=LayoutRoot}"
+                                CommandParameter="{Binding}"
+                                Margin="5,0" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Height="Auto" 
+                                AutomationProperties.AutomationId="OpenButton">
+                            Delete
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="ProjListItemTemplate">
+            <Border BorderBrush="Gray" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="{Binding Subject}" Grid.Row="0"/>
+                    <TextBlock Text="{Binding Type}" HorizontalAlignment="Left"   Grid.Column="1"/>
+
+                    <StackPanel Grid.Column="3"  Orientation="Horizontal">
+                        <Button Command="{Binding DataContext.LoadXmlCommand, ElementName=LayoutRoot}"
+                                CommandParameter="{Binding}"
+                                Margin="5,0" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Height="Auto" 
+                                AutomationProperties.AutomationId="OpenButton">
+                            Load
+                        </Button>
+                        <Button Command="{Binding DataContext.DeleteXmlCommand, ElementName=LayoutRoot}"
+                                CommandParameter="{Binding}"
+                                Margin="5,0" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Height="Auto" 
+                                AutomationProperties.AutomationId="OpenButton">
+                            Delete
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+    
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="5" Grid.Row="0">
+            <RadioButton Content="Show All Projects Created" IsChecked="{Binding Path=ShowCreated, Mode=TwoWay}" 
+                         FontWeight="Bold"  GroupName="groupName" Margin="10, 0, 1, 2" />
+            <RadioButton Content="Show This Module Only"  IsChecked="{Binding Path=NotShowCreated, Mode=TwoWay}" 
+                         FontWeight="Bold" GroupName="groupName" Margin="5, 0, 1, 2" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" >
+            <GroupBox Header="Pages"  MinHeight="300" BorderBrush="Green" BorderThickness="2" Margin="5,10,5,0">
+                <ListBox x:Name="ListBox1"
+                    ItemsSource="{Binding CreatedPages}" 
+                    ItemTemplate="{StaticResource PageListItemTemplate}"
+                    ItemContainerStyle="{StaticResource ModuleContainerStyle}"
+                    AutomationProperties.AutomationId="MessagesList"/>
+            </GroupBox>
+            <GroupBox Header="Created Projects"  MinHeight="300" BorderBrush="Green" BorderThickness="2" Margin="5,10,5,20"
+                      Visibility="{Binding ShowCreated, Converter={StaticResource booleanToVisibilityConverter}}">
+                <ListBox x:Name="ListBox2"
+                    ItemsSource="{Binding CreatedProjects}" 
+                    ItemTemplate="{StaticResource ProjListItemTemplate}"
+                    ItemContainerStyle="{StaticResource ModuleContainerStyle}"
+                    AutomationProperties.AutomationId="MessagesList"/>
+            </GroupBox>
+        </StackPanel>
+        <GroupBox Header="Module" Grid.Row="2"  Grid.Column="1" Margin="5,10,5,10" BorderBrush="Black"  BorderThickness="2">
+            <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="5">
+                        <TextBlock Text="Module Type:" FontWeight="Bold" Margin="5, 0, 0, 0"/>
+                        <ComboBox ItemsSource="{Binding TypeOptions}"  SelectedItem="{Binding CurrModule.Type}" Margin="5, 0, 0, 0"/>
+                        <TextBlock Text="Title:"  FontWeight="Bold" Margin="25, 0, 0, 0"/>
+                        <TextBox Text="{Binding CurrModule.Title}" MinWidth="400"  Margin="5, 0, 0, 0" />
+                    </StackPanel>
+                    <GroupBox Header="Dialogs" Grid.Row="2" Margin="2" MinWidth="300" MinHeight="200" 
+                               BorderBrush="Black" BorderThickness="2">
+                        <TextBox Text="{Binding CurrModule}"  AcceptsReturn="True" Margin="5" />
+                    </GroupBox>
+                    <GroupBox Header="New Vocabuary" Grid.Row="2" Grid.Column="1" Margin="2" MinWidth="300" MinHeight="200" 
+                              BorderBrush="Black" BorderThickness="2">
+                        <TextBox Text="{Binding CurrModule.Vocab}" AcceptsReturn="True" Margin="5"/>
+                    </GroupBox>
+                    <GroupBox Header="{Binding PageStrIdx}" Grid.Row="4" Grid.ColumnSpan="2" Margin="2" 
+                              BorderBrush="Black" BorderThickness="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <GroupBox Header="Text" Grid.Column="1" BorderBrush="Black" BorderThickness="2" Margin="2" >
+                                <TextBox MinWidth="300" MinHeight="200" TextWrapping="Wrap" 
+                                         AcceptsReturn="True" Text="{Binding CurrPage.Txt}"  />
+                            </GroupBox>
+                            <StackPanel Grid.Column="2" Margin="8, 8, 0, 0">
+                                <TextBlock Text="Sub Title:"  FontWeight="Bold" Margin="5, 10, 0, 0"/>
+                                <TextBox Text="{Binding CurrPage.SubTitle}"  MinWidth="300" Margin="0, 0, 10, 0"/>
+
+                                <TextBlock Text="Image File:" FontWeight="Bold" Margin="5, 10, 0, 0"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Text="{Binding CurrPage.ImgFile}"  MinWidth="300"/>
+                                    <Button Content="Browse" Margin="10, 0, 10, 0" />
+                                </StackPanel>
+
+                                <TextBlock Text="Media File:" FontWeight="Bold" Margin="5, 10, 0, 0"/>
+                                <StackPanel Orientation="Horizontal" >
+                                    <TextBox Text="{Binding CurrPage.PlayFile}" MinWidth="300"/>
+                                    <Button Content="Browse" Margin="10, 0, 10, 0"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                    <Button Content="Add Page"></Button>
+                                    <Button Content="Update Page" Margin="10, 2, 0, 2"></Button>
+                                </StackPanel>
+                            </StackPanel>
+                            
+                        </Grid>
+                    </GroupBox>
+                    <StackPanel Orientation="Horizontal" Grid.Row="5" HorizontalAlignment="Right" Grid.ColumnSpan="3" Margin="0,20,0,0">
+                        <Button Content="Create Module"></Button>
+                        <Button Content="Update" Margin="10, 2, 0, 2"></Button>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

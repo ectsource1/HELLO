@@ -28,7 +28,7 @@
     <InstallUrl>http://www.ectedu.com/wpfapp/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -331,6 +331,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClassProject\ClassProject.csproj">
+      <Project>{4f800f06-5466-4c19-8ec0-c0b62237909a}</Project>
+      <Name>ClassProject</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GrammarBasics\GrammarBasics.csproj">
       <Project>{c64b0d11-8ed6-4fc1-9293-bbadba0fc8e5}</Project>
       <Name>GrammarBasics</Name>

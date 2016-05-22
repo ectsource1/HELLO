@@ -26,6 +26,7 @@ namespace SpeechTTS.ViewModels
         private bool notAuthenticated;
         private string userName = "ECT";
         private string _status;
+        private bool notLogin = true;
          
         [ImportingConstructor]
         public LoginViewModel(IAuthenticationService authService)
@@ -117,23 +118,39 @@ namespace SpeechTTS.ViewModels
 
         private void Authorize(object control)
         {
+            NotLogin = false;
             Status = "";
+            NotLogin = false;
             PasswordBox passwordBox = control as PasswordBox;
             string password = passwordBox.Password;
 
             if (userName.Length < 6) return;
             string sub = userName.Substring(5);
             int id = -1;
-            if (!Int32.TryParse("-105", out id)) return;
-
-            User user = _authService.AuthorizeComputer(id, password);
-            if (user.Id == -1)
+            if (!Int32.TryParse(sub, out id))
             {
-                Status = user.Name;
+                Status = "Invalid User Name !";
                 return;
             }
 
-            setIdentity(user);
+            try
+            {
+                User user = _authService.AuthorizeComputer(id, password);
+                if (user.Id == -1) {
+                   NotLogin = true;
+                   Status = user.Name + "--" + user.Macid;
+                   return;
+                }
+
+                setIdentity(user);
+
+            } catch (UnauthorizedAccessException) {
+                Status = "Login failed!";
+            } catch (Exception ex) {
+                Status = string.Format("ERROR: {0}", ex.Message);
+            }
+
+            NotLogin = true;
         }
 
         private void UpdatePw(object control)
@@ -144,7 +161,11 @@ namespace SpeechTTS.ViewModels
             if (userName.Length < 6) return;
             string sub = userName.Substring(5);
             int id = -1;
-            if (!Int32.TryParse("-105", out id)) return;
+            if (!Int32.TryParse(sub, out id))
+            {
+                Status = "Invalid User Name !";
+                return;
+            }
 
             _authService.UpdatePasswd(id, passwd);
             FocusPoint = true;
@@ -153,16 +174,27 @@ namespace SpeechTTS.ViewModels
             NeedAuth = false;
         }
 
+        public bool NotLogin
+        {
+            get { return this.notLogin; }
+            set { this.SetProperty(ref this.notLogin, value); }
+        }
+
         private void Login(object control)
         {
             Status = "";
+            NotLogin = false;
             PasswordBox passwordBox = control as PasswordBox;
             string clearTextPassword = passwordBox.Password;
 
             if (userName.Length < 6) return;
             string sub = userName.Substring(5);
             int id = -1;
-            if (!Int32.TryParse(sub, out id)) return; 
+            if (!Int32.TryParse(sub, out id))
+            {
+                Status = "Invalid User Name !";
+                return;
+            }       
 
             try
             {
@@ -171,8 +203,8 @@ namespace SpeechTTS.ViewModels
 
                 if (user.Id == -1)
                 {
-                    //MessageBox.Show(user.Name + "\n" + user.Macid);
-                    Status = user.Name;
+                    NotLogin = true;
+                    Status = user.Name + "--" + user.Macid;
                     return;
                 }
 
@@ -185,8 +217,10 @@ namespace SpeechTTS.ViewModels
             }
             catch (Exception ex)
             {
-                Status = string.Format("ERROR: {0}", ex.Message);
+                Status = string.Format("ERROR: {0}", ex.Message);   
             }
+
+            NotLogin = true;
         }
 
         private void setIdentity(User user)

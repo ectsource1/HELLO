@@ -81,8 +81,9 @@
             <TextBlock Text="Friend's Name:" FontWeight="Bold" Grid.Row="10" Grid.Column="2" HorizontalAlignment="Right" Margin="20,5,0,0"/>
             <TextBox Text="{Binding PersonData.Friend}" Grid.Row="10" Grid.Column="3" Margin="20,5,0,0"/>
 
+            
             <Button Content="Save" Width="60" Command="{Binding SaveCommand}" Grid.Row="13" Grid.Column="3" Margin="20,20,0,0"/>
- 
+            <TextBlock Text="{Binding Message}"  FontWeight="Bold" Grid.Row="13" Grid.Column="0" HorizontalAlignment="Right" Margin="0,20,0,0"/>
         </Grid>
     </GroupBox>
 </UserControl>
