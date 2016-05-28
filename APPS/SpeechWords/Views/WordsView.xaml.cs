@@ -36,5 +36,19 @@ namespace SpeechWords.Views
             WordsViewModel model = (WordsViewModel)this.DataContext;
             model.MediaEnded();
         }
+
+        private void VocabDbClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            WordsViewModel model = (WordsViewModel)this.DataContext;
+            model.SelectedText2 = MyVocab.SelectedText;
+        }
+
+        private void DialogDbClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            WordsViewModel model = (WordsViewModel)this.DataContext;
+            model.SelectedText2 = MyDialog.SelectedText;
+        }
+
+
     }
 }

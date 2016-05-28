@@ -60,9 +60,9 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Page"   FontWeight="Bold" Margin="5, 0, 1, 2" />
                     <TextBlock Text="{Binding TextDocument.Idx}" FontWeight="Bold" Margin="3, 0, 1, 2" />
-                    <Button  Width="100" Command="{Binding PreCommand}"  CommandParameter ="{Binding ElementName=ImageViewer1}" 
+                    <Button  Width="100" Command="{Binding PreCommand}"  
                      IsEnabled="{Binding PreClickable}" Content="Previous" Margin="280, 0, 12, 10"/>
-                    <Button  Width="100"  Command="{Binding NextCommand}"  CommandParameter ="{Binding ElementName=ImageViewer1}" 
+                    <Button  Width="100"  Command="{Binding NextCommand}"  
                     	IsEnabled="{Binding NextClickable}" Content="Next" Margin="0, 0, 12, 10"/>
                 </StackPanel>
             </GroupBox>

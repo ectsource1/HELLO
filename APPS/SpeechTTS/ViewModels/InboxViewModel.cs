@@ -268,7 +268,7 @@ namespace SpeechTTS.ViewModels
 
             intro1 = "Looked like you still not logged in yet.\n";
             intro1 += "Did you forgot your username and password?\n";
-            intro1 += "Ask your daddy or Mommy whether they know your account or not?\n";
+            intro1 += "Ask your dad or Mom whether they know your account or not?\n";
             intro1 += "Then try one more time!\n";
 
             intro2 = "Congradulations, you have successfully logged into the system.\n";

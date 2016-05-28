@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="AsyncResult.cs" />
     <Compile Include="EctPage.cs" />
+    <Compile Include="Offline.cs" />
     <Compile Include="Personal.cs" />
     <Compile Include="SerializableDictionary.cs" />
     <Compile Include="DesignDataCollectionView.cs" />

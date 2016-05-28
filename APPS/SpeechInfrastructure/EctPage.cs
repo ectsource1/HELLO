@@ -23,7 +23,6 @@ namespace SpeechInfrastructure
         public EctModule()
         {
             Pages = new ObservableCollection<EctPage>();
-            Dialogs = new List<KeyValuePair<string, string>>();
         }
         // module type
         public string Type { get; set; }
@@ -31,9 +30,47 @@ namespace SpeechInfrastructure
         public string Title { get; set; }
         // vocabuary
         public string Vocab { get; set; }
+        // Dialogs
+        public string Dialogs { get; set; }
 
         public ObservableCollection<EctPage> Pages { get; set; }
-        public List<KeyValuePair<string, string>> Dialogs { get; set; }
+
+        public EctModule clone()
+        {
+            EctModule ret = new EctModule();
+            ret.Title = this.Title;
+            ret.Type = this.Type;
+            ret.Dialogs = this.Dialogs;
+            ret.Vocab = this.Vocab;
+            int cnt = Pages.Count;
+            for (int i = 0; i < cnt; i++)
+            {
+                ret.Pages.Add(this.Pages[i]);
+            }
+            return ret;
+        } 
+        public static void copy(EctModule m1, EctModule m2)
+        { 
+            m2.Title = m1.Title;
+            m2.Type = m1.Type;
+            m2.Dialogs = m1.Dialogs;
+            m2.Vocab = m1.Vocab;
+
+            // clear m2 first
+            m2.Pages.Clear();
+
+            int cnt = m1.Pages.Count;
+            if (cnt > 0)
+            {
+                for (int i = 0; i < cnt; i++)
+                {
+                    m2.Pages.Add(m1.Pages[i]);
+                }
+            }
+        }
+          
+
+       
     }
 
     public class EctXML

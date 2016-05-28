@@ -18,7 +18,12 @@ namespace ClassProject.Views
         [Import]
         public ProjectViewModel ViewModel
         {
-            set { this.DataContext = value; }
+            set {
+                this.DataContext = value;
+                ProjectViewModel model = (ProjectViewModel)this.DataContext;
+                model.setPageElements(tTxt, tImgFile, tPlayFile, tSubtitle);
+                model.setModuleElemets(tType, tTitle, tDialogs, tVocab);
+            }
         }
 
     }

@@ -13,7 +13,6 @@
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -44,19 +43,21 @@
             <TextBox Text="{Binding RepeatCnt}" MinWidth="20" IsReadOnly="True" FontWeight="Bold" AutomationProperties.AutomationId="CntTxt"/>
             <Button  Width="60"  Command="{Binding SpeakWordCommand}" Content="Repeat" IsEnabled="True"  Margin="10, 0, 10, 0"/>
         </StackPanel>
-        
-        <GroupBox Header="父母必读"  Grid.Row="2" Margin="5,10,5,0" Visibility="{Binding ReadmeIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
-            <TextBox TextWrapping="Wrap" IsReadOnly="True" Text="{Binding Readme, Mode=OneWay}" />
-        </GroupBox>
-        <GroupBox Header="家长英语20句" Grid.Row="2" Margin="5,10,5,0" Visibility="{Binding Dialog1IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
-            <TextBox Text="{Binding Dialog1, Mode=OneWay}" MouseDoubleClick="MouseDbClick20" IsReadOnly="True" x:Name="Dialog20"/>
-        </GroupBox>
-        <GroupBox Header="家长英语+30句" Grid.Row="2" Margin="5,10,5,0" Visibility="{Binding Dialog2IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
-            <TextBox Text="{Binding Dialog2, Mode=OneWay}" MouseDoubleClick="MouseDbClick30" IsReadOnly="True" x:Name="Dialog30"/>
-        </GroupBox>
-            <GroupBox Header="家长英语详解" Grid.Row="2" Margin="5,10,5,0" Visibility="{Binding TranslateIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
-            <TextBox Text="{Binding Translate, Mode=OneWay}" IsReadOnly="True" />
-        </GroupBox>
+
+        <Grid Grid.Row="2" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <GroupBox Header="父母必读"   Margin="5,10,5,0" Visibility="{Binding ReadmeIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+                <TextBox TextWrapping="Wrap" IsReadOnly="True" Text="{Binding Readme, Mode=OneWay}" />
+            </GroupBox>
+            <GroupBox Header="家长英语20句"  Margin="5,10,5,0" Visibility="{Binding Dialog1IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+                <TextBox Text="{Binding Dialog1, Mode=OneWay}" MouseDoubleClick="MouseDbClick20" IsReadOnly="True" x:Name="Dialog20"/>
+            </GroupBox>
+            <GroupBox Header="家长英语+30句"  Margin="5,10,5,0" Visibility="{Binding Dialog2IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+                <TextBox Text="{Binding Dialog2, Mode=OneWay}" MouseDoubleClick="MouseDbClick30" IsReadOnly="True" x:Name="Dialog30"/>
+            </GroupBox>
+            <GroupBox Header="家长英语详解"  Margin="5,10,5,0" Visibility="{Binding TranslateIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+                <TextBox Text="{Binding Translate, Mode=OneWay}" IsReadOnly="True" />
+            </GroupBox>
+        </Grid>
         
         <GroupBox Grid.Row="2" Grid.Column="1" Visibility="{Binding IsDialog, Converter={StaticResource booleanToVisibilityConverter}}">
             <StackPanel >

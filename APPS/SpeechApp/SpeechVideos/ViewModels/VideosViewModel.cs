@@ -977,9 +977,9 @@ namespace SpeechVideos.ViewModels
                 tmp.Text = tmp.TxtList[tmp.Idx];
 
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\") + 1);
-                string videoName = tmp.ImgList[tmp.Idx];
+                string videoName = tmp.MediaList[tmp.Idx];
                 if (!videoName.Contains("\\"))
-                    videoName = folderName + tmp.ImgList[tmp.Idx];
+                    videoName = folderName + tmp.MediaList[tmp.Idx];
                 if (!File.Exists(videoName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
@@ -1015,9 +1015,9 @@ namespace SpeechVideos.ViewModels
 
                 tmp.Text = tmp.TxtList[tmp.Idx];
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\")+1);
-                string videoName = tmp.ImgList[tmp.Idx];
+                string videoName = tmp.MediaList[tmp.Idx];
                 if (!videoName.Contains("\\"))
-                    videoName = folderName + tmp.ImgList[tmp.Idx];
+                    videoName = folderName + tmp.MediaList[tmp.Idx];
                 if (!File.Exists(videoName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
@@ -1150,9 +1150,9 @@ namespace SpeechVideos.ViewModels
                 temp.From = identity.Fullname;
 
                 string folderName = temp.FileName.Substring(0, temp.FileName.LastIndexOf(@"\") + 1);
-                string videoName = temp.ImgList[0];
+                string videoName = temp.MediaList[0];
                 if (!videoName.Contains("\\"))
-                    videoName = folderName + temp.ImgList[0];
+                    videoName = folderName + temp.MediaList[0];
                 if (!File.Exists(videoName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;

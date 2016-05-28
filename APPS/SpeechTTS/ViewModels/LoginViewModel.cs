@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Input;
 using SpeechTTS.Auth;
 using SpeechInfrastructure;
+
 namespace SpeechTTS.ViewModels
 {
     [Export]
@@ -19,15 +20,19 @@ namespace SpeechTTS.ViewModels
         private readonly DelegateCommand<object> authCommand;
         private readonly DelegateCommand<object> loginCommand;
         private readonly DelegateCommand<object> updatePasswd;
+        private readonly DelegateCommand forceCommand;
 
         private bool needAuth;
         private bool needUpdate;
+        private bool needForce;
+        private bool forced = false;
         private bool focusPoint;
         private bool notAuthenticated;
         private string userName = "ECT";
         private string _status;
         private bool notLogin = true;
-         
+        private string numForced = "";
+
         [ImportingConstructor]
         public LoginViewModel(IAuthenticationService authService)
         {
@@ -35,10 +40,12 @@ namespace SpeechTTS.ViewModels
             this.authCommand  = new DelegateCommand<object>(this.Authorize);
             this.loginCommand = new DelegateCommand<object>(this.Login);
             this.updatePasswd = new DelegateCommand<object>(this.UpdatePw);
+            this.forceCommand = new DelegateCommand(this.ForceLogin);
 
             this._authService = authService;
             needAuth = false;
             needUpdate = false;
+            needForce = false;
             focusPoint = false;
             notAuthenticated = true;
 
@@ -73,6 +80,11 @@ namespace SpeechTTS.ViewModels
             get { return this.updatePasswd; }
         }
 
+        public ICommand ForceCommand
+        {
+            get { return this.forceCommand; }
+        }
+
         public string UserName
         {
             get
@@ -102,6 +114,18 @@ namespace SpeechTTS.ViewModels
         {
             get { return this.needUpdate; }
             set { this.SetProperty(ref this.needUpdate, value); }
+        }
+
+        public bool NeedForce
+        {
+            get { return this.needForce; }
+            set { this.SetProperty(ref this.needForce, value); }
+        }
+
+        public string NumForced
+        {
+            get { return this.numForced; }
+            set { this.SetProperty(ref this.numForced, value); }
         }
 
         public bool FocusPoint
@@ -143,6 +167,7 @@ namespace SpeechTTS.ViewModels
                 }
 
                 setIdentity(user);
+                updateOffline(true);
 
             } catch (UnauthorizedAccessException) {
                 Status = "Login failed!";
@@ -174,6 +199,21 @@ namespace SpeechTTS.ViewModels
             NeedAuth = false;
         }
 
+        private void ForceLogin()
+        {
+            forced = true;
+            string fileName = AppDomain.CurrentDomain.BaseDirectory;
+            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+           
+            Personal person = null;
+            person = Personal.read(fileName);
+
+            int days = (person.LoginDate.Date - Personal.start.Date).Days;
+            string dstr = person.LoginDate.ToString("yy-MM-dd");
+            string [] ele = dstr.Split('-');
+            NumForced = ele[2] + ele[0] + days.ToString() + ele[1];
+        }
+
         public bool NotLogin
         {
             get { return this.notLogin; }
@@ -185,21 +225,61 @@ namespace SpeechTTS.ViewModels
             Status = "";
             NotLogin = false;
             PasswordBox passwordBox = control as PasswordBox;
-            string clearTextPassword = passwordBox.Password;
-
-            if (userName.Length < 6) return;
-            string sub = userName.Substring(5);
+            string cpw = passwordBox.Password;
+            int inputDays = 0;
             int id = -1;
-            if (!Int32.TryParse(sub, out id))
+            string sub = "";
+
+            if(forced)
             {
-                Status = "Invalid User Name !";
+                if (!Int32.TryParse(cpw, out inputDays))
+                {
+                    Status = "Invalid User Name !";
+                    return;
+                }
+
+                Personal person = updateOffline(false);
+
+                if (!person.validate(inputDays, 10))
+                {
+                    Status = "Forced Password Incorrect !";
+                    NotLogin = true;
+                    return;
+                }
+
+                if (person.StudentId.Length < 6) return;
+
+                sub = person.StudentId.Substring(5);
+                if (!Int32.TryParse(sub, out id))
+                {
+                    Status = "Invalid User Name !";
+                    return;
+                }
+
+                User user = new User();
+                user.Id = id;
+                user.Name = person.StudentName;
+                user.Email = "";
+                user.Roles = "Student";
+                user.Level = 0;
+            
+                setIdentity(user);
+
                 return;
-            }       
+            }
 
             try
             {
+                if (userName.Length < 6) return;
+                sub = userName.Substring(5);
+                id = -1;
+                if (!Int32.TryParse(sub, out id))
+                {
+                    Status = "Invalid User Name !";
+                    return;
+                }
                 //Validate credentials through the authentication service
-                User user = _authService.AuthenticateUser(id, clearTextPassword);
+                User user = _authService.AuthenticateUser(id, cpw);
 
                 if (user.Id == -1)
                 {
@@ -209,7 +289,8 @@ namespace SpeechTTS.ViewModels
                 }
 
                 setIdentity(user);
-                
+
+                updateOffline(true);
             }
             catch (UnauthorizedAccessException)
             {
@@ -223,6 +304,27 @@ namespace SpeechTTS.ViewModels
             NotLogin = true;
         }
 
+        private Personal updateOffline(bool bNormal)
+        {
+            string fileName = AppDomain.CurrentDomain.BaseDirectory;
+            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+            Personal person = Personal.read(fileName);
+            if (bNormal)
+            {
+                person.NormalLogin = bNormal;
+                person.LoginDate = DateTime.Now;
+            } else if (person.NormalLogin)
+            {
+                person.NormalLogin = false;
+                person.LoginDate = DateTime.Now;
+            }
+            
+            Personal.write(person, fileName);
+
+            return person;
+            
+        }
+            
         private void setIdentity(User user)
         {
             //Get the current principal object

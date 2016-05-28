@@ -22,33 +22,19 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="30"/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="{Binding SubTitle}" Grid.Row="0"/>
-                    <TextBlock Text="{Binding Type}" HorizontalAlignment="Left"   Grid.Column="1"/>
 
-                    <StackPanel Grid.Column="3"  Orientation="Horizontal">
-                        <Button Command="{Binding DataContext.LoadXmlCommand, ElementName=LayoutRoot}"
+                    <StackPanel Grid.Column="1"  Orientation="Horizontal">
+                        <Button Command="{Binding DataContext.RemovePageCommand, ElementName=LayoutRoot}"
                                 CommandParameter="{Binding}"
                                 Margin="5,0" 
                                 HorizontalAlignment="Center" 
                                 VerticalAlignment="Center" 
                                 Height="Auto" 
-                                AutomationProperties.AutomationId="OpenButton">
-                            Load
-                        </Button>
-                        <Button Command="{Binding DataContext.DeleteXmlCommand, ElementName=LayoutRoot}"
-                                CommandParameter="{Binding}"
-                                Margin="5,0" 
-                                HorizontalAlignment="Center" 
-                                VerticalAlignment="Center" 
-                                Height="Auto" 
-                                AutomationProperties.AutomationId="OpenButton">
-                            Delete
-                        </Button>
+                                AutomationProperties.AutomationId="OpenButton">Remove</Button>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -61,33 +47,21 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="30"/>
                         <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="{Binding Subject}" Grid.Row="0"/>
+                    <TextBlock Text="{Binding Title}" Grid.Row="0"/>
                     <TextBlock Text="{Binding Type}" HorizontalAlignment="Left"   Grid.Column="1"/>
 
-                    <StackPanel Grid.Column="3"  Orientation="Horizontal">
-                        <Button Command="{Binding DataContext.LoadXmlCommand, ElementName=LayoutRoot}"
+                    <StackPanel Grid.Column="2"  Orientation="Horizontal">
+                        <Button Command="{Binding DataContext.RemoveProjCommand, ElementName=LayoutRoot}"
                                 CommandParameter="{Binding}"
                                 Margin="5,0" 
                                 HorizontalAlignment="Center" 
                                 VerticalAlignment="Center" 
                                 Height="Auto" 
-                                AutomationProperties.AutomationId="OpenButton">
-                            Load
-                        </Button>
-                        <Button Command="{Binding DataContext.DeleteXmlCommand, ElementName=LayoutRoot}"
-                                CommandParameter="{Binding}"
-                                Margin="5,0" 
-                                HorizontalAlignment="Center" 
-                                VerticalAlignment="Center" 
-                                Height="Auto" 
-                                AutomationProperties.AutomationId="OpenButton">
-                            Delete
-                        </Button>
+                                AutomationProperties.AutomationId="OpenButton">Remove</Button>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -146,17 +120,17 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="5">
                         <TextBlock Text="Module Type:" FontWeight="Bold" Margin="5, 0, 0, 0"/>
-                        <ComboBox ItemsSource="{Binding TypeOptions}"  SelectedItem="{Binding CurrModule.Type}" Margin="5, 0, 0, 0"/>
+                        <ComboBox x:Name="tType" ItemsSource="{Binding TypeOptions}"  SelectedItem="{Binding SelectedType, Mode=TwoWay}" Margin="5, 0, 0, 0"/>
                         <TextBlock Text="Title:"  FontWeight="Bold" Margin="25, 0, 0, 0"/>
-                        <TextBox Text="{Binding CurrModule.Title}" MinWidth="400"  Margin="5, 0, 0, 0" />
+                        <TextBox x:Name="tTitle"  Text="{Binding CreatedProjects.CurrentItem.Title, Mode=OneWay}" MinWidth="400"  Margin="5, 0, 0, 0" />
                     </StackPanel>
-                    <GroupBox Header="Dialogs" Grid.Row="2" Margin="2" MinWidth="300" MinHeight="200" 
-                               BorderBrush="Black" BorderThickness="2">
-                        <TextBox Text="{Binding CurrModule}"  AcceptsReturn="True" Margin="5" />
+                    <GroupBox Header="Dialogs" Grid.Row="2" Margin="2" MinWidth="300" MinHeight="200" BorderBrush="Black" BorderThickness="2"
+                              Visibility="{Binding ShowDialogTxt, Converter={StaticResource booleanToVisibilityConverter}}">
+                        <TextBox x:Name="tDialogs" Text="{Binding CreatedProjects.CurrentItem.Dialogs, Mode=OneWay}"  AcceptsReturn="True" Margin="5" />
                     </GroupBox>
-                    <GroupBox Header="New Vocabuary" Grid.Row="2" Grid.Column="1" Margin="2" MinWidth="300" MinHeight="200" 
-                              BorderBrush="Black" BorderThickness="2">
-                        <TextBox Text="{Binding CurrModule.Vocab}" AcceptsReturn="True" Margin="5"/>
+                    <GroupBox Header="New Vocabuary" Grid.Row="2" Grid.Column="1" Margin="2" MinWidth="300" MinHeight="200" BorderBrush="Black" BorderThickness="2"
+                              Visibility="{Binding ShowDialogTxt, Converter={StaticResource booleanToVisibilityConverter}}">
+                        <TextBox x:Name="tVocab" Text="{Binding CreatedProjects.CurrentItem.Vocab, Mode=OneWay}" AcceptsReturn="True" Margin="5"/>
                     </GroupBox>
                     <GroupBox Header="{Binding PageStrIdx}" Grid.Row="4" Grid.ColumnSpan="2" Margin="2" 
                               BorderBrush="Black" BorderThickness="2">
@@ -171,36 +145,40 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <GroupBox Header="Text" Grid.Column="1" BorderBrush="Black" BorderThickness="2" Margin="2" >
-                                <TextBox MinWidth="300" MinHeight="200" TextWrapping="Wrap" 
-                                         AcceptsReturn="True" Text="{Binding CurrPage.Txt}"  />
+                                <TextBox x:Name="tTxt" MinWidth="300" MinHeight="200" TextWrapping="Wrap" 
+                                         AcceptsReturn="True" Text="{Binding CreatedPages.CurrentItem.Txt, Mode=OneWay}"  />
                             </GroupBox>
                             <StackPanel Grid.Column="2" Margin="8, 8, 0, 0">
                                 <TextBlock Text="Sub Title:"  FontWeight="Bold" Margin="5, 10, 0, 0"/>
-                                <TextBox Text="{Binding CurrPage.SubTitle}"  MinWidth="300" Margin="0, 0, 10, 0"/>
+                                <TextBox x:Name="tSubtitle" Text="{Binding CreatedPages.CurrentItem.SubTitle, Mode=OneWay}"  MinWidth="300" Margin="0, 0, 10, 0"/>
 
-                                <TextBlock Text="Image File:" FontWeight="Bold" Margin="5, 10, 0, 0"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox Text="{Binding CurrPage.ImgFile}"  MinWidth="300"/>
-                                    <Button Content="Browse" Margin="10, 0, 10, 0" />
+                                <StackPanel Visibility="{Binding ShowDialogTxt, Converter={StaticResource booleanToVisibilityConverter}}">
+                                    <TextBlock Text="Image File:" FontWeight="Bold" Margin="5, 10, 0, 0"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox x:Name="tImgFile" Text="{Binding CreatedPages.CurrentItem.ImgFile, Mode=OneWay}"  MinWidth="300"/>
+                                        <Button Content="Browse" Margin="10, 0, 10, 0" />
+                                    </StackPanel>
                                 </StackPanel>
 
+                                <StackPanel Visibility="{Binding ShowDialogTxt, Converter={StaticResource booleanToVisibilityConverter}}">
                                 <TextBlock Text="Media File:" FontWeight="Bold" Margin="5, 10, 0, 0"/>
                                 <StackPanel Orientation="Horizontal" >
-                                    <TextBox Text="{Binding CurrPage.PlayFile}" MinWidth="300"/>
+                                    <TextBox x:Name="tPlayFile"  Text="{Binding CreatedPages.CurrentItem.PlayFile, Mode=OneWay}" MinWidth="300"/>
                                     <Button Content="Browse" Margin="10, 0, 10, 0"/>
                                 </StackPanel>
-
+                                </StackPanel>
+                                
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                                    <Button Content="Add Page"></Button>
-                                    <Button Content="Update Page" Margin="10, 2, 0, 2"></Button>
+                                    <Button Content="Add Page" Command="{Binding DataContext.AddPageCommand, ElementName=LayoutRoot}"/>
+                                    <Button Content="Update Page" Command="{Binding DataContext.UpdatePageCommand, ElementName=LayoutRoot}" Margin="10, 2, 0, 2" />
                                 </StackPanel>
                             </StackPanel>
                             
                         </Grid>
                     </GroupBox>
                     <StackPanel Orientation="Horizontal" Grid.Row="5" HorizontalAlignment="Right" Grid.ColumnSpan="3" Margin="0,20,0,0">
-                        <Button Content="Create Module"></Button>
-                        <Button Content="Update" Margin="10, 2, 0, 2"></Button>
+                        <Button Content="Create Module" Command="{Binding DataContext.AddModuleCommand, ElementName=LayoutRoot}"/>
+                        <Button Content="Update" Margin="10, 2, 0, 2" Command="{Binding DataContext.UpdateModuleCommand, ElementName=LayoutRoot}"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>

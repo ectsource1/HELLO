@@ -812,7 +812,7 @@ namespace Pronunciation.ViewModels
             image.Source = bitmap;
             this.TextDocument = tmp;
 
-            string audioName = folderName + tmp.MyAudioList[tmp.Idx];
+            string audioName = folderName + tmp.MediaList[tmp.Idx];
             media.Source = new Uri(audioName);
             media.LoadedBehavior = MediaState.Manual;
             media.UnloadedBehavior = MediaState.Manual;
@@ -852,7 +852,7 @@ namespace Pronunciation.ViewModels
                 bitmap.EndInit();
                 image.Source = bitmap;
 
-                string mediaName = folderName + tmp.MyAudioList[tmp.Idx];
+                string mediaName = folderName + tmp.MediaList[tmp.Idx];
                 if (mediaName.Contains(".mp4"))
                 {
                     VideoLoaded = true;
@@ -943,7 +943,7 @@ namespace Pronunciation.ViewModels
                 bitmap.EndInit();
                 image.Source = bitmap;
 
-                string mediaName = folderName + temp.MyAudioList[0];
+                string mediaName = folderName + temp.MediaList[0];
                 media.Source = new Uri(mediaName);
                 media.LoadedBehavior = MediaState.Manual;
                 media.UnloadedBehavior = MediaState.Manual;

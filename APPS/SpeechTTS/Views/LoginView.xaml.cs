@@ -34,6 +34,7 @@ namespace SpeechTTS.Views
                 }
 
                 vmodel.NeedAuth = false;
+                vmodel.NeedForce = false;
 
             } else if (e.Key == Key.A && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
@@ -44,9 +45,37 @@ namespace SpeechTTS.Views
 
                 vmodel.NeedAuth = true;
                 vmodel.NeedUpdate = false;
+                vmodel.NeedForce = false;
                 vmodel.FocusPoint = false;
                 vmodel.NotAuthenticated = false;
             }
+            else if (e.Key == Key.F && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                LoginViewModel vmodel = (LoginViewModel)this.DataContext;
+
+                // display authorize only when not logged in
+                if (vmodel.FocusPoint) return;
+
+                vmodel.NeedForce = true;
+                vmodel.NeedAuth = false;
+                vmodel.NeedUpdate = false;
+                vmodel.FocusPoint = false;
+                vmodel.NotAuthenticated = false;
+            }
+            else if (e.Key == Key.L && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                LoginViewModel vmodel = (LoginViewModel)this.DataContext;
+
+                // display authorize only when not logged in
+                if (vmodel.FocusPoint) return;
+
+                vmodel.NeedForce = false;
+                vmodel.NeedAuth = false;
+                vmodel.NeedUpdate = false;
+                vmodel.FocusPoint = false;
+                vmodel.NotAuthenticated = true;
+            }
+
         }
 
         [Import]

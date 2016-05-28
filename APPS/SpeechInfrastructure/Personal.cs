@@ -9,6 +9,7 @@ namespace SpeechInfrastructure
     public class Personal : ICloneable
     {
         public static string PERSON_BIN = "PERSON.bin";
+        public static DateTime start = new DateTime(2000, 1, 1);
 
         public string StudentId { get; set; }
 
@@ -45,6 +46,22 @@ namespace SpeechInfrastructure
         public string Aunt { get; set; }
 
         public string Friend { get; set; }
+
+        public bool NormalLogin { get; set; }
+
+        public DateTime LoginDate { get; set; }
+
+        public bool validate(int inputDays, int allow)
+        {
+            bool ret = false;
+            int last = (LoginDate.Date - start.Date).Days;
+            int curr = (DateTime.Now - start.Date).Days;
+            int diff = curr - last;
+            int num = last + 129;
+            if (diff < allow && num == inputDays) ret = true;
+
+            return ret;
+        }
 
         public bool isFilled()
         {

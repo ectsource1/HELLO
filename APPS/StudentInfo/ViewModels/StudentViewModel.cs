@@ -87,6 +87,8 @@ namespace StudentInfo.ViewModels
             Message = "";
             string fileName = AppDomain.CurrentDomain.BaseDirectory;
             fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+            personData.NormalLogin = true;
+            personData.LoginDate = DateTime.Now;
             Personal.write(personData, fileName);
             Message = "Saved Successfully !";
         }

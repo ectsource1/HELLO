@@ -12,6 +12,7 @@
 
     <UserControl.Resources>
         <infra:FlowToTextDocumentConverter x:Key="flowDocumentConverter"/>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White">
@@ -53,21 +54,83 @@
             <TextBlock Text="{Binding Message}" FontWeight="Bold" Margin="5,0,5,5" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="3">
-            <Button  Width="100"  Command="{Binding SaveCommand}"   Content="Save" Margin="0, 0, 12, 10"/>
-            <Button  Width="100"  Command="{Binding SaveAsCommand}" Content="Save As" Margin="0, 0, 12, 10"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="3"
+                    Visibility="{Binding TextDocument.Editable, Converter={StaticResource booleanToVisibilityConverter}}">
+            <Button  Width="100"  Command="{Binding SaveCommand}"   Content="Save" Margin="0, 0, 12, 0"/>
+            <Button  Width="100"  Command="{Binding SaveAsCommand}" Content="Save As" Margin="0, 0, 12, 0"/>
         </StackPanel>
 
-        <GroupBox Header="{Binding TextDocument.Subject}" Grid.Row="3" Grid.ColumnSpan="5" BorderBrush="#FF0F68A6" BorderThickness="2" Margin="2, 0, 1, 2">
-            <controls:FsRichTextBox x:Name="EditBox" Document="{Binding Path=TextDocument, Converter={StaticResource flowDocumentConverter}, Mode=TwoWay}" 
-                                ToolbarBackground="#FFD2CB84" ToolbarBorderBrush="#FFC6BE75" 
-                                ToolbarBorderThickness="1,1,1,0" CodeControlsVisibility="Collapsed" EditControlsVisibility="Collapsed">
-                <ei:Interaction.Behaviors>
-                    <controls:FsRichTextSelectionBehavior SelectedText="{Binding SelectedText}" />
-                </ei:Interaction.Behaviors>
-            </controls:FsRichTextBox>
-        </GroupBox>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" Margin="10, 5, 0, 0">
+            <Button   Command="{Binding ACommand}"  Content="{Binding ALabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding AVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding BCommand}"  Content="{Binding BLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding BVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding CCommand}"   Content="{Binding CLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding CVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding DCommand}" Content="{Binding DLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding DVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding ECommand}"   Content="{Binding ELabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding EVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding FCommand}" Content="{Binding FLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding FVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding GCommand}"   Content="{Binding GLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding GVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding HCommand}" Content="{Binding HLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding HVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding ICommand}"   Content="{Binding ILabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding IVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding JCommand}" Content="{Binding JLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding JVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding KCommand}"   Content="{Binding KLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding KVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding LCommand}" Content="{Binding LLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding LVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding MCommand}"   Content="{Binding MLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding MVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding NCommand}" Content="{Binding NLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding NVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding OCommand}"   Content="{Binding OLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding OVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding PCommand}" Content="{Binding PLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding PVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding QCommand}"   Content="{Binding QLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding QVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding RCommand}" Content="{Binding RLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding RVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding SCommand}"   Content="{Binding SLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding SVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding TCommand}" Content="{Binding TLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding TVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding UCommand}"   Content="{Binding ULabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding UVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding VCommand}" Content="{Binding VLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding VVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding WCommand}"   Content="{Binding WLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding WVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding XCommand}" Content="{Binding XLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding XVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding YCommand}"   Content="{Binding YLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding YVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <Button   Command="{Binding ZCommand}" Content="{Binding XLabel}" Margin="0, -3, 5, 0"
+                      Visibility="{Binding ZVisible, Converter={StaticResource booleanToVisibilityConverter}}"/>
+        </StackPanel>
 
+        <Grid Grid.Row="3" Grid.ColumnSpan="5" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <GroupBox Header="{Binding TextDocument.Subject}"   
+                  BorderBrush="#FF0F68A6" BorderThickness="2" Margin="2, 0, 1, 2">
+                <controls:FsRichTextBox x:Name="EditBox" Document="{Binding Path=TextDocument, Converter={StaticResource flowDocumentConverter}, Mode=TwoWay}" 
+                                ToolbarBackground="#FFD2CB84" ToolbarBorderBrush="#FFC6BE75" 
+                                ToolbarBorderThickness="1,1,1,0" CodeControlsVisibility="Collapsed" EditControlsVisibility="Collapsed"
+                                 >
+                    <ei:Interaction.Behaviors>
+                        <controls:FsRichTextSelectionBehavior SelectedText="{Binding SelectedText}" />
+                    </ei:Interaction.Behaviors>
+                </controls:FsRichTextBox>
+            </GroupBox>
+        </Grid>
+        
+        
+        
         <GroupBox Header="" Grid.Row="3" Grid.Column="5" BorderBrush="#FF0F68A6" BorderThickness="2" Margin="1, 2, 2, 2">
             <StackPanel >
                 <GroupBox Header="Font Size:" FontWeight="Bold" Margin="1, 2, 2, 0">

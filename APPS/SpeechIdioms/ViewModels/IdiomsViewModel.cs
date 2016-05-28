@@ -24,8 +24,7 @@ namespace SpeechIdioms.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class IdiomsViewModel : BindableBase, INavigationAware
     {
-        private static string MISSED_IMG = "DataFiles\\mising.jpg";
-        private static string MISSED_MP3 = "DataFiles\\mising.mp3";
+        
 
         private readonly DelegateCommand goBackCommand;
         private readonly DelegateCommand resetCommand;
@@ -791,7 +790,7 @@ namespace SpeechIdioms.ViewModels
                 if (!File.Exists(imgName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                    imgName = appPath + MISSED_IMG;
+                    imgName = appPath + TTService.MISSED_IMG;
                 }
 
                 BitmapImage bitmap = new BitmapImage();
@@ -801,15 +800,15 @@ namespace SpeechIdioms.ViewModels
                 image.Source = bitmap;
                 this.TextDocument = tmp;
 
-                if (tmp.MyAudioList.Count > 0)
+                if (tmp.MediaList.Count > 0)
                 {
-                    string audioName = tmp.MyAudioList[tmp.Idx];
+                    string audioName = tmp.MediaList[tmp.Idx];
                     if (!audioName.Contains("\\"))
-                        audioName = folderName + tmp.MyAudioList[tmp.Idx];
+                        audioName = folderName + tmp.MediaList[tmp.Idx];
                     if (!File.Exists(audioName))
                     {
                         string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                        audioName = appPath + MISSED_MP3;
+                        audioName = appPath + TTService.MISSED_MP3;
                     }
                     audio.Source = new Uri(audioName);
                     audio.LoadedBehavior = MediaState.Manual;
@@ -843,7 +842,7 @@ namespace SpeechIdioms.ViewModels
                 if (!File.Exists(imgName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                    imgName = appPath + MISSED_IMG;
+                    imgName = appPath + TTService.MISSED_IMG;
                 }
 
                 BitmapImage bitmap = new BitmapImage();
@@ -854,15 +853,15 @@ namespace SpeechIdioms.ViewModels
 
                 this.TextDocument = tmp;
 
-                if (tmp.MyAudioList.Count > 0)
+                if (tmp.MediaList.Count > 0)
                 {
-                    string audioName = tmp.MyAudioList[tmp.Idx];
+                    string audioName = tmp.MediaList[tmp.Idx];
                     if (!audioName.Contains("\\"))
-                        audioName = folderName + tmp.MyAudioList[tmp.Idx];
+                        audioName = folderName + tmp.MediaList[tmp.Idx];
                     if (!File.Exists(audioName))
                     {
                         string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                        audioName = appPath + MISSED_MP3;
+                        audioName = appPath + TTService.MISSED_MP3;
                     }
                     audio.Source = new Uri(audioName);
                     audio.LoadedBehavior = MediaState.Manual;
@@ -941,7 +940,7 @@ namespace SpeechIdioms.ViewModels
                 if (!File.Exists(imgName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                    imgName = appPath + MISSED_IMG;
+                    imgName = appPath + TTService.MISSED_IMG;
                 }
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
@@ -949,15 +948,15 @@ namespace SpeechIdioms.ViewModels
                 bitmap.EndInit();
                 image.Source = bitmap;
 
-                if (temp.MyAudioList.Count > 0)
+                if (temp.MediaList.Count > 0)
                 {
-                    string audioName = temp.MyAudioList[0];
+                    string audioName = temp.MediaList[0];
                     if (!audioName.Contains("\\"))
-                        audioName = folderName + temp.MyAudioList[0];
+                        audioName = folderName + temp.MediaList[0];
                     if (!File.Exists(audioName))
                     {
                         string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                        audioName = appPath + MISSED_MP3;
+                        audioName = appPath + TTService.MISSED_MP3;
                     }
                     audio.Source = new Uri(audioName);
                     audio.LoadedBehavior = MediaState.Manual;

@@ -42,6 +42,9 @@ namespace SpeechTTS.Model
         public static string SOUND_FILE   = "ectclass.sound";
         public static string GRAMMAR_FILE = "ectclass.grammar";
 
+        public static string MISSED_IMG = "DataFiles\\missing.jpg";
+        public static string MISSED_MP3 = "DataFiles\\missing.mp3";
+
         public int numNotes   = 0;
         public int numCarts   = 0;
         public int numClasses = 0;
@@ -93,6 +96,7 @@ namespace SpeechTTS.Model
             this.cardsDocuments = new List<TextDocument>();
             string _path = _appDataRoot + "Cartoons\\";
             TextDocument doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "LM.cartoon";
             doc.Subject = "The Lion and The Mouse";
             doc.StudentId = studentId;
@@ -104,6 +108,7 @@ namespace SpeechTTS.Model
             this.activitiesDocuments = new List<TextDocument>();
             _path = _appDataRoot + "Classes\\";
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "classsample.class";
             doc.Subject = "The Body Parts";
             doc.StudentId = studentId;
@@ -115,6 +120,7 @@ namespace SpeechTTS.Model
             this.idiomsDocuments = new List<TextDocument>();
             _path = _appDataRoot + "Idioms\\";
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "idiomsample.idiom";
             doc.Subject = "15 Commom Idioms";
             doc.StudentId = studentId;
@@ -126,6 +132,7 @@ namespace SpeechTTS.Model
             this.soundDocuments = new List<TextDocument>();
             _path = _appDataRoot + "Sounds\\";
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "aeiou.sound";
             doc.Subject = "Vowel Sounds";
             doc.StudentId = studentId;
@@ -137,6 +144,7 @@ namespace SpeechTTS.Model
             this.grammarDocuments = new List<TextDocument>();
             _path = _appDataRoot + "Grammars\\";
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "singular.grammar";
             doc.Subject = "Singular and Plurals";
             doc.StudentId = studentId;
@@ -144,6 +152,7 @@ namespace SpeechTTS.Model
             this.grammarDocuments.Add(doc);
 
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "countNouns.grammar";
             doc.Subject = "Count and Non-Count Nouns";
             doc.StudentId = studentId;
@@ -157,43 +166,49 @@ namespace SpeechTTS.Model
             numNotes = 8;
             // 1 ok
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "myVocab.notes";
-            doc.Subject = "My Vocaburary 词汇";
+            doc.Subject = "Minimum Vocaburary (2600) 英语听说读写最基本词汇";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
             // 3 ok
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "irregularVerb.notes";
-            doc.Subject = "Irregular Verb 不规则动词";
+            doc.Subject = "Irregular Verb 常用不规则动词";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
             // ok
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "plurals.notes";
-            doc.Subject = "Plural Nouns 不规则名词复数";
+            doc.Subject = "Plural Nouns 常用不规则名词复数";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "synonyms.notes";
-            doc.Subject = "Synonyms 近义词";
+            doc.Subject = "Synonyms 常用近义词";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "antonyms.notes";
-            doc.Subject = "Antonyms 反义词";
+            doc.Subject = "Antonyms 常用反义词";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "soundHard.notes";
             doc.Subject = "Words that are hard to pronounce correctly 难发音的单词";
             doc.StudentId = studentId;
@@ -201,6 +216,7 @@ namespace SpeechTTS.Model
             this.funDocuments.Add(doc);
 
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "soundClose.notes";
             doc.Subject = "Words that have close sounds 发音接近的单词";
             doc.StudentId = studentId;
@@ -209,8 +225,17 @@ namespace SpeechTTS.Model
 
             // ok
             doc = new TextDocument();
+            doc.Editable = false;
             doc.FileName = _path + "famous.notes";
             doc.Subject = "Famous Epigram 警句名言";
+            doc.StudentId = studentId;
+            doc.From = studentName;
+            this.funDocuments.Add(doc);
+
+            // ok
+            doc = new TextDocument();
+            doc.FileName = _path + "sample.notes";
+            doc.Subject = "My Notes 我的英文笔记";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
@@ -469,6 +494,8 @@ namespace SpeechTTS.Model
 
         public TextDocument GetFunDocument(Guid id)
         {
+            return getDocument(id, this.funDocuments, STORY);
+            /*
             TextDocument doc = this.funDocuments.FirstOrDefault(e => e.Id == id);
 
             if (string.IsNullOrEmpty(doc.Text) ) {
@@ -495,7 +522,7 @@ namespace SpeechTTS.Model
                 }
             }
 
-            return doc;
+            return doc;*/
         }
 
         
@@ -602,64 +629,7 @@ namespace SpeechTTS.Model
 
         public TextDocument GetCardsDocument(Guid id)
         {
-            TextDocument doc = this.cardsDocuments.FirstOrDefault(e => e.Id == id);
-
-            if (string.IsNullOrEmpty(doc.Text))
-            {
-                try
-                {
-                    using (StreamReader sr = new StreamReader(doc.FileName))
-                    {
-                        if (doc.FileName.ToUpper().Contains(CARTOON))
-                        {
-                            int idx = -1;
-                            bool paged = false;
-                            string line;
-                            string multiLines = null;
-                            while ((line = sr.ReadLine()) != null)
-                            {
-                                //if (line.Contains(TTService.TITLE_KEY)) continue;
-
-                                if (line.ToUpper().Contains(PAGE_KEY))
-                                {
-                                    if (multiLines != null) doc.addTxtList(multiLines);
-                                    string[] col = Regex.Split(line, TTService.SEP_CHAR);
-                                    doc.addImage(col[1]);
-                                    if (col.Length > 2)
-                                        doc.addMyAudio(col[2]);
-                                    multiLines = null;
-                                    idx = 0;
-                                    paged = true;
-                                } else {
-                                    idx += 1;
-                                }
-
-                                if ( paged && idx > 0)
-                                {
-                                    multiLines = multiLines + line + "\n";
-                                }       
-                                
-                            }
-
-                            doc.addTxtList(multiLines);
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("The file could not be read:");
-                    Console.WriteLine(e.Message);
-                }
-            }
-
-            string txt = "";
-            if (doc.TxtList.Count > 0)
-               txt =  doc.TxtList[0];
-
-            doc.Idx = 0;
-            doc.Text = txt;
-
-            return doc;
+            return getDocument(id, this.cardsDocuments, CARTOON);
         }
 
         public void AddCardsDocument(TextDocument doc)
@@ -729,95 +699,7 @@ namespace SpeechTTS.Model
 
         public TextDocument GetActivitiesDocument(Guid id)
         {
-            TextDocument doc = this.activitiesDocuments.FirstOrDefault(e => e.Id == id);
-
-            if (string.IsNullOrEmpty(doc.Text))
-            {
-                try
-                {
-                    using (StreamReader sr = new StreamReader(doc.FileName))
-                    {
-                        if (doc.FileName.ToUpper().Contains(CLASS))
-                        {
-                            bool isFirst = false;
-                            int txtType = 10;
-                            string line;
-                            string pageLines = null;
-                            string vocabLines = null;
-                            while ((line = sr.ReadLine()) != null)
-                            {
-                                if (line.ToUpper().Contains(VOCAB_KEY))
-                                {
-                                    isFirst = true;
-                                    txtType = 0;
-                                }
-
-                                if (line.ToUpper().Contains(DIALOG_KEY))
-                                {
-                                    isFirst = true;
-                                    txtType = 1;
-                                }
-
-                                if (line.ToUpper().Contains(PAGE_KEY))
-                                {
-                                    isFirst = true;
-                                    txtType = 2;
-                                    if (pageLines != null) doc.addTxtList(pageLines);
-                                    string[] col = Regex.Split(line, TTService.SEP_CHAR);
-                                    doc.addImage(col[1]);
-                                    pageLines = null;
-                                }
-
-                                if (txtType == 0)
-                                {
-                                    if (isFirst) isFirst = false;
-                                    else vocabLines = vocabLines + line + "\n";
-                                }
-
-                                if (txtType == 1)
-                                {
-                                    if (isFirst) isFirst = false;
-                                    else
-                                    {
-                                        if (line.Contains(A) || line.Contains(B) )
-                                        {
-                                            string[] col = Regex.Split(line, TTService.SEP_CHAR);
-                                            doc.addGender(col[0]);
-                                            doc.addSentence(col[1]);
-                                            doc.MergeSentences(col[0], col[1]);
-                                        }
-                                    }
-                                }
-
-                                if (txtType == 2)
-                                {
-                                    if (isFirst) isFirst = false;
-                                    else pageLines = pageLines + line + "\n";
-                                }
-                                
-                            }
-
-                            doc.addTxtList(pageLines);
-                            doc.Vocalburay = vocabLines;
-
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("The file could not be read:");
-                    Console.WriteLine(e.Message);
-                }
-            }
-
-            string txt = "";
-            if (doc.TxtList.Count > 0)
-                txt = doc.TxtList[0];
-
-            doc.Idx = 0;
-            doc.Text = txt;
-
-            return doc;
+            return getDocument(id, this.activitiesDocuments, CLASS);
         }
 
         public void AddActivitiesDocument(TextDocument doc)
@@ -887,88 +769,7 @@ namespace SpeechTTS.Model
 
         public TextDocument GetIdiomsDocument(Guid id)
         {
-            TextDocument doc = this.idiomsDocuments.FirstOrDefault(e => e.Id == id);
-
-            if (string.IsNullOrEmpty(doc.Text))
-            {
-                try
-                {
-                    using (StreamReader sr = new StreamReader(doc.FileName))
-                    {
-                        if (doc.FileName.ToUpper().Contains(IDIOM))
-                        {
-                            bool isFirst = false;
-                            int txtType = 0;
-                            string line;
-                            string pageLines = null;
-                            while ((line = sr.ReadLine()) != null)
-                            {
-                                if (line.ToUpper().Contains(DIALOG_KEY))
-                                {
-                                    isFirst = true;
-                                    txtType = 1;
-                                }
-
-                                if (line.ToUpper().Contains(PAGE_KEY))
-                                {
-                                    isFirst = true;
-                                    txtType = 2;
-                                    if (pageLines != null) doc.addTxtList(pageLines);
-                                    string[] col = Regex.Split(line, TTService.SEP_CHAR);
-                                    doc.addImage(col[1]);
-                                    doc.addSubject(col[2]);
-                                    pageLines = null;
-                                }
-
-                                if (txtType == 1)
-                                {
-                                    if (isFirst) isFirst = false;
-                                    else
-                                    {
-                                        if (line.ToUpper().Contains(A) || line.ToUpper().Contains(B) 
-                                            || line.ToUpper().Contains(SUB))
-                                        {
-                                            string[] col = Regex.Split(line, TTService.SEP_CHAR);
-                                            if (line.ToUpper().Contains(SUB) && doc.GenderList.Count > 0)
-                                            {
-                                                doc.InsertEmptyLine();
-                                            }
-                                            doc.addGender(col[0]);
-                                            doc.addSentence(col[1]);
-                                            
-                                            doc.MergeSentences(col[0], col[1]);
-                                        }
-                                    }
-                                }
-
-                                if (txtType == 2)
-                                {
-                                    if (isFirst) isFirst = false;
-                                    else pageLines = pageLines + line + "\n";
-                                }
-
-                            }
-
-                            doc.addTxtList(pageLines);
-
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("The file could not be read:");
-                    Console.WriteLine(e.Message);
-                }
-            }
-
-            string txt = "";
-            if (doc.TxtList.Count > 0)
-                txt = doc.TxtList[0];
-
-            doc.Idx = 0;
-            doc.Text = txt;
-
-            return doc;
+            return getDocument(id, this.idiomsDocuments, IDIOM);
         }
 
         public void AddIdiomsDocument(TextDocument doc)
@@ -1038,73 +839,7 @@ namespace SpeechTTS.Model
 
         public TextDocument GetSoundDocument(Guid id)
         {
-            TextDocument doc = this.soundDocuments.FirstOrDefault(e => e.Id == id);
-
-            if (string.IsNullOrEmpty(doc.Text))
-            {
-                try
-                {
-                    using (StreamReader sr = new StreamReader(doc.FileName))
-                    {
-                        if (doc.FileName.ToUpper().Contains(SOUND))
-                        {
-                            bool isFirst = false;
-                            int txtType = 0;
-                            string line;
-                            string pageLines = null;
-                            while ((line = sr.ReadLine()) != null)
-                            {
-                                if (line.ToUpper().Contains(TITLE_KEY))
-                                {
-                                    string[] col = Regex.Split(line, TTService.SEP_CHAR);
-                                    doc.Subject = col[1];
-                                    continue;
-                                }
-                               
-                                if (line.ToUpper().Contains(PAGE_KEY))
-                                {
-                                    isFirst = true;
-                                    txtType = 2;
-                                    if (pageLines != null) doc.addTxtList(pageLines);
-                                    string[] col = Regex.Split(line, TTService.SEP_CHAR);
-                                    doc.addMyAudio(col[1]);
-                                    doc.addImage(col[2]);
-                                    doc.addSubject(col[3]);
-                                    pageLines = null;
-                                }
-
-                                if (txtType == 2)
-                                {
-                                    if (isFirst) isFirst = false;
-                                    else pageLines = pageLines + line + "\n";
-                                }
-
-                            }
-
-                            doc.addTxtList(pageLines);
-
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("The file could not be read:");
-                    Console.WriteLine(e.Message);
-                }
-            }
-
-            string txt = "", subj = "";
-            if (doc.TxtList.Count > 0)
-            {
-                txt = doc.TxtList[0];
-                subj = doc.SubjectList[0];
-            }
-                
-            doc.Idx = 0;
-            doc.Text = txt;
-            doc.SubSubject = subj;
-
-            return doc;
+            return getDocument(id, this.soundDocuments, SOUND);
         }
 
         public void AddSoundDocument(TextDocument doc)
@@ -1216,6 +951,107 @@ namespace SpeechTTS.Model
         {
             grammarDocuments.Remove(doc);
             SaveGrammarDocuments();
+        }
+
+        private TextDocument getDocument(Guid id, List<TextDocument> list, string mType)
+        {
+            TextDocument doc = list.FirstOrDefault(e => e.Id == id);
+
+            if (string.IsNullOrEmpty(doc.Text))
+            {
+                try
+                {
+                    using (StreamReader sr = new StreamReader(doc.FileName))
+                    {
+                        if (doc.FileName.ToUpper().Contains(mType))
+                        {
+                            bool isFirst = false;
+                            int txtType = 10;
+                            string line;
+                            string pageLines = null;
+                            string vocabLines = null;
+                            while ((line = sr.ReadLine()) != null)
+                            {
+                                if (line.ToUpper().Contains(VOCAB_KEY))
+                                {
+                                    isFirst = true;
+                                    txtType = 0;
+                                }
+
+                                if (line.ToUpper().Contains(DIALOG_KEY))
+                                {
+                                    isFirst = true;
+                                    txtType = 1;
+                                }
+
+                                if (line.ToUpper().Contains(PAGE_KEY))
+                                {
+                                    isFirst = true;
+                                    txtType = 2;
+                                    if (pageLines != null) doc.addTxtList(pageLines);
+                                    string[] col = Regex.Split(line, TTService.SEP_CHAR);
+                                    int num = col.Length;
+                                    if (num > 1)
+                                        doc.SubjectList.Add(col[1]);
+                                    if (num > 2)
+                                        doc.addImage(col[2]);
+                                    if (num > 3)
+                                        doc.addMedia(col[3]);
+
+                                    pageLines = null;
+                                }
+
+                                if (txtType == 0)
+                                {
+                                    if (isFirst) isFirst = false;
+                                    else vocabLines = vocabLines + line + "\n";
+                                }
+
+                                if (txtType == 1)
+                                {
+                                    if (isFirst) isFirst = false;
+                                    else
+                                    {
+                                        if (line.Contains(A) || line.Contains(B)
+                                            || line.ToUpper().Contains(SUB))
+                                        {
+                                            string[] col = Regex.Split(line, TTService.SEP_CHAR);
+                                            doc.addGender(col[0]);
+                                            doc.addSentence(col[1]);
+                                            doc.MergeSentences(col[0], col[1]);
+                                        }
+                                    }
+                                }
+
+                                if (txtType == 2)
+                                {
+                                    if (isFirst) isFirst = false;
+                                    else pageLines = pageLines + line + "\n";
+                                }
+
+                            }
+
+                            doc.addTxtList(pageLines);
+                            doc.Vocalburay = vocabLines;
+
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            string txt = "";
+            if (doc.TxtList.Count > 0)
+                txt = doc.TxtList[0];
+
+            doc.Idx = 0;
+            doc.Text = txt;
+
+            return doc;
         }
 
     }

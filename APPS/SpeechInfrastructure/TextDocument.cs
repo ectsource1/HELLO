@@ -9,9 +9,9 @@ namespace SpeechInfrastructure
     {
         public static string TXT = "ECT";
 
-        private List<string> imgList;
         private List<string> txtList;
-        private List<string> myAudioList;
+        private List<string> imgList;
+        private List<string> mediaList;
         private List<string> subjectList;
 
         private List<string> genderList;
@@ -29,13 +29,15 @@ namespace SpeechInfrastructure
                 this.Text = "";
             }
 
-            imgList = new List<string>();
             txtList = new List<string>();
-            myAudioList = new List<string>();
+            imgList = new List<string>();
+            mediaList = new List<string>();
             subjectList = new List<string>();
 
             genderList = new List<string>();
             sentenceList = new List<string>();
+
+            Editable = true;
         }
 
         public TextDocument(Guid id)
@@ -92,6 +94,8 @@ namespace SpeechInfrastructure
 
         public int Idx { get; set; }
 
+        public bool Editable { get; set; }
+
         public List<string> ImgList
         {
             get { return this.imgList; }
@@ -112,14 +116,14 @@ namespace SpeechInfrastructure
             txtList.Add(str);
         }
 
-        public List<string> MyAudioList
+        public List<string> MediaList
         {
-            get { return this.myAudioList; }
+            get { return this.mediaList; }
         }
 
-        public void addMyAudio(string str)
+        public void addMedia(string str)
         {
-            myAudioList.Add(str);
+            mediaList.Add(str);
         }
 
         public List<string> SubjectList

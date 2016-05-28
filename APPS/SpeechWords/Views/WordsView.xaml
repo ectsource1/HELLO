@@ -12,6 +12,7 @@
 
     <UserControl.Resources>
         <infra:FlowToTextDocumentConverter x:Key="flowDocumentConverter"/>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White">
@@ -41,7 +42,10 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" MaxHeight="25" Grid.Row="0" Grid.ColumnSpan="6" HorizontalAlignment="Right" Margin="10,5,10,0">
-            <TextBlock Text="{Binding SelectedText, Mode=OneWay}" FontWeight="Bold" MaxWidth="300" />
+            <TextBlock Text="{Binding SelectedText, Mode=OneWay}" FontWeight="Bold" MaxWidth="300" 
+                       Visibility="{Binding TranscriptIsChecked, Converter={StaticResource booleanToVisibilityConverter}}"/>
+            <TextBlock Text="{Binding SelectedText2, Mode=OneWay}" FontWeight="Bold" MaxWidth="300" 
+                       Visibility="{Binding NotTranscript, Converter={StaticResource booleanToVisibilityConverter}}"/>
             <ComboBox ItemsSource="{Binding RepeatOptions}"  SelectedItem="{Binding Repeat}" Margin="5,0,5,0"/>
             <TextBox MinWidth="25" Text="{Binding RepeatCnt}"  IsReadOnly="True" FontWeight="Bold" AutomationProperties.AutomationId="CntTxt"/>
             <Button  Width="60"  Command="{Binding SpeakWordCommand}" Content="Repeat" IsEnabled="True"  Margin="10, 0, 0, 0"/>
@@ -72,15 +76,36 @@
             </GroupBox>
         </StackPanel>
 
-        <GroupBox Header="Story Text" Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="1" BorderBrush="#FF0F68A6" BorderThickness="2" Margin="2, 0, 1, 2">
-            <controls:FsRichTextBox x:Name="EditBox" Document="{Binding Path=TextDocument, Converter={StaticResource flowDocumentConverter}, Mode=TwoWay}" 
+        <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="1">
+            <StackPanel Orientation="Horizontal">
+                <RadioButton Content="Transcripts" FontWeight="Bold" IsChecked="{Binding Path=TranscriptIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="10, 0, 1, 2" />
+                <RadioButton Content="Dialog" FontWeight="Bold" IsChecked="{Binding Path=DialogIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5, 0, 1, 2" />
+                <RadioButton Content="Vocaburary" FontWeight="Bold" IsChecked="{Binding Path=VocabIsChecked, Mode=TwoWay}" GroupName="groupName" Margin="5, 0, 1, 2"/>
+            </StackPanel>
+            <GroupBox Header="Story Text" BorderBrush="#FF0F68A6" BorderThickness="2" Margin="2, 0, 1, 2"
+                  Visibility="{Binding TranscriptIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+                <controls:FsRichTextBox x:Name="EditBox" Document="{Binding Path=TextDocument, Converter={StaticResource flowDocumentConverter}, Mode=TwoWay}" 
                                 ToolbarBackground="#FFD2CB84" ToolbarBorderBrush="#FFC6BE75" 
                                 ToolbarBorderThickness="1,1,1,0" CodeControlsVisibility="Collapsed" EditControlsVisibility="Collapsed">
-                <ei:Interaction.Behaviors>
-                    <controls:FsRichTextSelectionBehavior SelectedText="{Binding SelectedText}" />
-                </ei:Interaction.Behaviors>
-            </controls:FsRichTextBox>
-        </GroupBox>
+                    <ei:Interaction.Behaviors>
+                        <controls:FsRichTextSelectionBehavior SelectedText="{Binding SelectedText}" />
+                    </ei:Interaction.Behaviors>
+                </controls:FsRichTextBox>
+            </GroupBox>
+            <StackPanel Orientation="Horizontal" Margin="2, 10, 1, 5">
+                <TextBlock Text="{Binding Gender, Mode=OneWay}"   FontWeight="Bold" Margin="5, 0, 1, 2" />
+                <TextBlock Text="："  FontWeight="Bold" Margin="1, 0, 1, 2" />
+                <TextBlock Text="{Binding Sentence, Mode=OneWay}"   Margin="5, 0, 1, 2" />
+            </StackPanel>
+            <GroupBox Header="Dialog"  BorderBrush="#FF0F68A6" BorderThickness="2" Margin="2, 0, 1, 2"
+                  Visibility="{Binding DialogIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+                <TextBox Text="{Binding TextDocument.Dialogs, Mode=OneWay}"  x:Name="MyDialog" Margin="3, 0, 1, 2" IsReadOnly="True" MouseDoubleClick="DialogDbClick" />
+            </GroupBox>
+            <GroupBox Header="New Vocaburary"  BorderBrush="#FF0F68A6" BorderThickness="1"  Margin="2, 0, 1, 2"
+                  Visibility="{Binding VocabIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
+                <TextBox Text="{Binding TextDocument.Vocalburay, Mode=OneWay}" Margin="3, 0, 1, 2" x:Name="MyVocab" IsReadOnly="True" MouseDoubleClick="VocabDbClick" />
+            </GroupBox>
+        </StackPanel>
 
         <GroupBox Header="" Grid.Row="3" Grid.Column="5" BorderBrush="#FF0F68A6" BorderThickness="2" Margin="1, 2, 2, 2">
             <StackPanel >
