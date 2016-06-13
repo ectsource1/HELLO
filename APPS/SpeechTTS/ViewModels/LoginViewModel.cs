@@ -8,6 +8,7 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using System.Windows.Input;
 using SpeechTTS.Auth;
+using SpeechTTS.Model;
 using SpeechInfrastructure;
 
 namespace SpeechTTS.ViewModels
@@ -15,6 +16,7 @@ namespace SpeechTTS.ViewModels
     [Export]
     public class LoginViewModel : BindableBase, INavigationAware
     {
+        private readonly ITTService ttsService;
         private readonly IAuthenticationService _authService;
         private readonly DelegateCommand logoutCommand;
         private readonly DelegateCommand<object> authCommand;
@@ -36,7 +38,7 @@ namespace SpeechTTS.ViewModels
         private int totalSeconds;
 
         [ImportingConstructor]
-        public LoginViewModel(IAuthenticationService authService)
+        public LoginViewModel(ITTService ttsService1, IAuthenticationService authService)
         {
             this.logoutCommand = new DelegateCommand(this.Logout);
             this.authCommand  = new DelegateCommand<object>(this.Authorize);
@@ -44,6 +46,7 @@ namespace SpeechTTS.ViewModels
             this.updatePasswd = new DelegateCommand<object>(this.UpdatePw);
             this.forceCommand = new DelegateCommand(this.ForceLogin);
 
+            this.ttsService = ttsService1;
             this._authService = authService;
             needAuth = false;
             needUpdate = false;
@@ -51,8 +54,8 @@ namespace SpeechTTS.ViewModels
             focusPoint = false;
             notAuthenticated = true;
 
-            string fileName = AppDomain.CurrentDomain.BaseDirectory;
-            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+            string fileName = ttsService.getDefaultUserPath();
+            fileName = fileName + Personal.PERSON_BIN;
 
             if (File.Exists(fileName))
             {
@@ -204,9 +207,9 @@ namespace SpeechTTS.ViewModels
         private void ForceLogin()
         {
             forced = true;
-            string fileName = AppDomain.CurrentDomain.BaseDirectory;
-            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
-           
+            string fileName = ttsService.getDefaultUserPath();
+            fileName = fileName + Personal.PERSON_BIN;
+
             Personal person = null;
             person = Personal.read(fileName);
 
@@ -326,8 +329,8 @@ namespace SpeechTTS.ViewModels
 
         private Personal updateOffline(bool bNormal)
         {
-            string fileName = AppDomain.CurrentDomain.BaseDirectory;
-            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+            string fileName = ttsService.getDefaultUserPath();
+            fileName = fileName + Personal.PERSON_BIN;
             Personal person = Personal.read(fileName);
             if (bNormal)
             {

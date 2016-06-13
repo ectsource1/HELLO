@@ -104,6 +104,10 @@
       <Project>{8635c78d-ec1a-4748-a27c-09206066eae8}</Project>
       <Name>SpeechInfrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeechTTS\SpeechTTS.csproj">
+      <Project>{ff72148a-b240-4a59-bb72-5ecc4a000edf}</Project>
+      <Name>SpeechTTS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VoiceRecorder.Audio\VoiceRecorder.Audio.csproj">
       <Project>{7fd5a356-e699-4519-9cf0-0f73cd8a76bf}</Project>
       <Name>VoiceRecorder.Audio</Name>

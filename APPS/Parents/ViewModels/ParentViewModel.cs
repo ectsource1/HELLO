@@ -10,6 +10,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Regions;
 using System.Windows.Input;
 using SpeechInfrastructure;
+using SpeechTTS.Model;
 
 namespace Parents.ViewModels
 {
@@ -60,12 +61,14 @@ namespace Parents.ViewModels
         private int repeat = 5;
         private int repeatCnt = 0;
         private int at20 = 0;
+        private ITTService ttsService;
 
         SpeechSynthesizer voice;
 
         [ImportingConstructor]
-        public ParentViewModel()
+        public ParentViewModel(ITTService ttsService1)
         {
+            ttsService = ttsService1;
             voice = new SpeechSynthesizer();
             voice.SpeakCompleted += OnSpeakCompleted;
 
@@ -98,8 +101,8 @@ namespace Parents.ViewModels
             add50();
             addTranslate();
 
-            string fileName = AppDomain.CurrentDomain.BaseDirectory;
-            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+            string fileName = ttsService.getDefaultUserPath();
+            fileName = fileName + Personal.PERSON_BIN;
 
             string greeting = "Hello, my friend";
             if (File.Exists(fileName))

@@ -120,8 +120,8 @@ namespace SpeechTTS.ViewModels
 
             if (step == 2 && !speaking)
             {
-                string fileName = AppDomain.CurrentDomain.BaseDirectory;
-                fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+                string fileName = ttsService.getDefaultUserPath();
+                fileName = fileName + Personal.PERSON_BIN;
                 Personal person = null;
                 bool filled = false;
                 if (File.Exists(fileName))

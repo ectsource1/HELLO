@@ -19,6 +19,7 @@ namespace SpeechTTS.Model
         int getNumGrammars();
 
         string getAudioPath();
+        string getDefaultUserPath();
 
         int FunIdx(TextDocument doc);
         IAsyncResult BeginGetFunDocuments(AsyncCallback callback, object userState);

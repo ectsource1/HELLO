@@ -9,6 +9,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Regions;
 using System.Threading;
 using SpeechTTS.Auth;
+using SpeechTTS.Model;
 using System.Windows.Input;
 using SpeechInfrastructure;
 
@@ -27,10 +28,13 @@ namespace StudentInfo.ViewModels
         private string message = "";
         private Personal personData;
         private bool checkVisible = false;
+        private readonly ITTService _ttsService;
 
         [ImportingConstructor]
-        public StudentViewModel()
+        public StudentViewModel(ITTService ttsService)
         {
+            _ttsService = ttsService;
+
             this.saveCommand = new DelegateCommand(this.Save);
 
             CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
@@ -40,8 +44,8 @@ namespace StudentInfo.ViewModels
                 id = (CustomIdentity)customPrincipal.Identity;
             }
 
-            string fileName = AppDomain.CurrentDomain.BaseDirectory;
-            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+            string fileName = _ttsService.getDefaultUserPath();
+            fileName = fileName + Personal.PERSON_BIN;
             Personal person = null;
 
             if (!File.Exists(fileName))
@@ -84,8 +88,8 @@ namespace StudentInfo.ViewModels
         private void Save()
         {
             Message = "";
-            string fileName = AppDomain.CurrentDomain.BaseDirectory;
-            fileName = fileName + "DataFiles\\" + Personal.PERSON_BIN;
+            string fileName = _ttsService.getDefaultUserPath();
+            fileName = fileName + Personal.PERSON_BIN;
             personData.NormalLogin = true;
             personData.LoginDate = DateTime.Now;
             Personal.write(personData, fileName);

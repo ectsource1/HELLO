@@ -88,7 +88,8 @@ namespace SpeechTTS.Model
 
             // setup application default files
             _appDataRoot = AppDomain.CurrentDomain.BaseDirectory + "DataFiles\\";
-            string personPath = _appDataRoot + Personal.PERSON_BIN;
+
+            string personPath = _userDefaultRoot + Personal.PERSON_BIN;
             string studentId = "";
             string studentName = "";
             bool editable = false;
@@ -346,7 +347,7 @@ namespace SpeechTTS.Model
             this.funDocuments.Add(doc);
 
 
-            string filePath = _userDataRoot + FUN_FILE;
+            string filePath = _userDefaultRoot + FUN_FILE;
             if (!File.Exists(filePath))
             {
                 newFile = true;
@@ -374,7 +375,7 @@ namespace SpeechTTS.Model
 
             // cartoon documents
             newFile = false;
-            filePath = _userDataRoot + CARTOON_FILE;
+            filePath = _userDefaultRoot + CARTOON_FILE;
             if (!File.Exists(filePath))
             {
                 newFile = true;
@@ -402,7 +403,7 @@ namespace SpeechTTS.Model
 
             // activites documents
             newFile = false;
-            filePath = _userDataRoot + CLASS_FILE;
+            filePath = _userDefaultRoot + CLASS_FILE;
             if (!File.Exists(filePath))
             {
                 newFile = true;
@@ -430,7 +431,7 @@ namespace SpeechTTS.Model
 
             // idioms documents
             newFile = false;
-            filePath = _userDataRoot + IDIOM_FILE;
+            filePath = _userDefaultRoot + IDIOM_FILE;
             if (!File.Exists(filePath))
             {
                 newFile = true;
@@ -458,7 +459,7 @@ namespace SpeechTTS.Model
 
             // pronunciation documents
             newFile = false;
-            filePath = _userDataRoot + SOUND_FILE;
+            filePath = _userDefaultRoot + SOUND_FILE;
             if (!File.Exists(filePath))
             {
                 newFile = true;
@@ -486,7 +487,7 @@ namespace SpeechTTS.Model
 
             // grammar documents
             newFile = false;
-            filePath = _userDataRoot + GRAMMAR_FILE;
+            filePath = _userDefaultRoot + GRAMMAR_FILE;
             if (!File.Exists(filePath))
             {
                 newFile = true;
@@ -544,9 +545,15 @@ namespace SpeechTTS.Model
              return this._userAudioRoot;
         }
 
+        public string getDefaultUserPath()
+        {
+            return this._userDefaultRoot;
+        }
+
+
         public void SaveFunDocuments()
         {
-            string filePath = _userDataRoot + FUN_FILE;
+            string filePath = _userDefaultRoot + FUN_FILE;
             int i = 0;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
             {
@@ -654,7 +661,7 @@ namespace SpeechTTS.Model
         // cartoon documents
         public void SaveCardsDocuments()
         {
-            string filePath = _userDataRoot + CARTOON_FILE;
+            string filePath = _userDefaultRoot + CARTOON_FILE;
             int i = 0;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
             {
@@ -724,7 +731,7 @@ namespace SpeechTTS.Model
         // activities documents
         public void SaveActivitiesDocuments()
         {
-            string filePath = _userDataRoot + CLASS_FILE;
+            string filePath = _userDefaultRoot + CLASS_FILE;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
             {
                 int i = 0;
@@ -794,7 +801,7 @@ namespace SpeechTTS.Model
         // idioms documents
         public void SaveIdiomsDocuments()
         {
-            string filePath = _userDataRoot + IDIOM_FILE;
+            string filePath = _userDefaultRoot + IDIOM_FILE;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
             {
                 int i = 0;
@@ -864,7 +871,7 @@ namespace SpeechTTS.Model
         // pronunciation documents
         public void SaveSoundDocuments()
         {
-            string filePath = _userDataRoot + SOUND_FILE;
+            string filePath = _userDefaultRoot + SOUND_FILE;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
             {
                 int i = 0;
@@ -934,7 +941,7 @@ namespace SpeechTTS.Model
         // grammar documents
         public void SaveGrammarDocuments()
         {
-            string filePath = _userDataRoot + GRAMMAR_FILE;
+            string filePath = _userDefaultRoot + GRAMMAR_FILE;
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
             {
                 int i = 0;
