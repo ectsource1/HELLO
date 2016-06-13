@@ -24,8 +24,6 @@ namespace SpeechVideos.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class VideosViewModel : BindableBase, INavigationAware
     {
-        private static string MISSED_FILE = "DataFiles\\mising.mp3";
-
         private readonly DelegateCommand goBackCommand;
         private readonly DelegateCommand resetCommand;
         private readonly DelegateCommand mp3Command;
@@ -95,8 +93,6 @@ namespace SpeechVideos.ViewModels
         FsRichTextBox fsRichTextBox2;
         MediaElement viewer;
 
-        
-
         [ImportingConstructor]
         public VideosViewModel(ITTService ttsService)
         {
@@ -116,7 +112,9 @@ namespace SpeechVideos.ViewModels
             this.resumeVideoCommand = new DelegateCommand(this.ResumeVideo);
             this.stopVideoCommand  = new DelegateCommand(this.StopVideo); 
 
-            this.ttsService = ttsService;  
+            this.ttsService = ttsService;
+
+            transcriptIsChecked = true;
 
             voiceOptions = new List<string>
             {
@@ -126,10 +124,12 @@ namespace SpeechVideos.ViewModels
 
             repeatOptions = new List<int>
             {
+                3,
                 5,
                 10,
                 15,
-                20
+                20,
+                50
             };
 
             fontSizeOptions = new List<int>
@@ -200,6 +200,7 @@ namespace SpeechVideos.ViewModels
                 {
                     this.RepeatCnt = 0;
                     RepeatSelected = false;
+                    this.SpeakClickable = true;
                 }
             }
 
@@ -955,7 +956,8 @@ namespace SpeechVideos.ViewModels
         {
             voice.SpeakAsyncCancelAll();
 
-            DialogIdx = 1000;
+            if (dialogIsChecked)
+                 DialogIdx = 1000;
 
             this.PreClickable = true;
             this.NextClickable = true;
@@ -966,6 +968,13 @@ namespace SpeechVideos.ViewModels
             this.VideoPlayClickable = true;
             this.VideoStopClickable = false;
             this.VideoResumeClickable = false;
+        }
+
+        public void changeVisible()
+        {
+            repeatCnt = 1000;
+            Stop();
+            StopVideo();
         }
 
         private void Pre()
@@ -983,7 +992,7 @@ namespace SpeechVideos.ViewModels
                 if (!File.Exists(videoName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                    videoName = appPath + MISSED_FILE;
+                    videoName = appPath + TTService.MISSED_MP3;
                 }
                 viewer.Source = new Uri(videoName);
                 viewer.LoadedBehavior = MediaState.Manual;
@@ -1021,7 +1030,7 @@ namespace SpeechVideos.ViewModels
                 if (!File.Exists(videoName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                    videoName = appPath + MISSED_FILE;
+                    videoName = appPath + TTService.MISSED_MP3;
                 }
                 viewer.Source = new Uri(videoName);
                 viewer.LoadedBehavior = MediaState.Manual;
@@ -1156,7 +1165,7 @@ namespace SpeechVideos.ViewModels
                 if (!File.Exists(videoName))
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
-                    videoName = appPath + MISSED_FILE;
+                    videoName = appPath + TTService.MISSED_MP3;
                 }
                 viewer.Source = new Uri(videoName);
                 viewer.LoadedBehavior   = MediaState.Stop;

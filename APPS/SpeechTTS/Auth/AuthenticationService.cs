@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace SpeechTTS.Auth
 {
     public interface IAuthenticationService
     {
+        string GetDbLink();
         void UpdatePasswd(int id, string pw);
         User AuthorizeComputer(int id, string pw);
         User AuthenticateUser(int id, string pw);
@@ -19,6 +21,8 @@ namespace SpeechTTS.Auth
     [Export(typeof(IAuthenticationService))]
     public class AuthenticationService : IAuthenticationService
     {
+        private string dbLink = "";
+
         private class InternalUserData
         {
             public InternalUserData(string username, string email, 
@@ -56,31 +60,70 @@ namespace SpeechTTS.Auth
 
         public AuthenticationService()
         {
+            string userRoot = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string userDataRoot = userRoot + @"\ECTData\";
+            if (!Directory.Exists(userDataRoot))
+            {
+                Directory.CreateDirectory(userDataRoot);
+            }
+
+            string userDefaultRoot = userDataRoot + @"ECT\";
+            if (!Directory.Exists(userDefaultRoot))
+            {
+                Directory.CreateDirectory(userDefaultRoot);
+            }
+
+            string fileName = userDefaultRoot + "goLink.txt";
+            dbLink = "http://www.ectedu.com/apiTest.php";
+            if (File.Exists(fileName))
+            {
+                string[] lines = File.ReadAllLines(fileName);
+                foreach (string line in lines)
+                {
+                    if (line.Length > 10 )
+                    {
+                        dbLink = line + "apiTest.php";
+                        break;
+                    }  
+                } // foreach
+            }
+        }
+
+        public string GetDbLink()
+        {
+            return dbLink;
         }
 
         public void UpdatePasswd(int id, string pw)
         {
+            updateStatus(id, "PPP");
+
             WebClient client = new WebClient();
-            string url = string.Format("http://www.ectedu.com/apiTest.php/students/{0}/PPP/{1}", id, pw);
+            string linkStr = dbLink + "/students/{0}/PPP/{1}/p";
+            string url = string.Format(linkStr, id, pw);
             string value = client.DownloadString(url);
         }
 
         public User AuthorizeComputer(int id, string pw)
         {
-            User user = validateUser(id, pw);
-            if (user.Id < 0) return user;
+            updateStatus(id, "PPM");
 
             string macid = GetMACAddress();
-            user.Macid = macid;
-
             WebClient client = new WebClient();
-            string url = string.Format("http://www.ectedu.com/apiTest.php/students/{0}/PPM/{1}", id, macid);
+
+            User user = validateUser(id, pw);
+            if (user.Id < 0) return user;
+            string linkStr = dbLink + "/students/{0}/PPM/{1}/ppm";
+            user.Macid = macid; 
+            string url = string.Format(linkStr, id, macid);
             string value = client.DownloadString(url);
             return user;
         }
 
         public User AuthenticateUser(int id, string pw)
-        {
+        { 
+            updateStatus(id, "PG");
+
             User user = validateUser(id, pw);
             if (user.Id < 0) return user;
 
@@ -96,11 +139,21 @@ namespace SpeechTTS.Auth
             return user;
         }
 
+        private void updateStatus(int id, string action)
+        {
+            string macid = GetMACAddress();
+            WebClient client = new WebClient();
+            string linkStr = dbLink + "/loginstats/{0}/ADD/{1}/{2}";
+            string url = string.Format(linkStr, id, macid, action);
+            string value = client.DownloadString(url);
+        }
+
         private User validateUser(int id, string pw)
         {
             string json;
             WebClient client = new WebClient();
-            string url = string.Format("http://www.ectedu.com/apiTest.php/students/{0}/PG/{1}", id, pw);
+            string linkStr = dbLink + "/students/{0}/PG/{1}/v";
+            string url = string.Format(linkStr, id, pw);
             string value = client.DownloadString(url);
             json = value;
             dynamic d = JsonConvert.DeserializeObject<dynamic>(json);

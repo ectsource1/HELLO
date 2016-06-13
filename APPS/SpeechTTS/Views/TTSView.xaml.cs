@@ -26,5 +26,12 @@ namespace SpeechTTS.Views
                 model.setEditbox(EditBox);
             }
         }
+
+        private void IsVisibleChanged1(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            TTSViewModel model = (TTSViewModel)this.DataContext;
+            model.changeVisible();
+        }
+
     }
 }

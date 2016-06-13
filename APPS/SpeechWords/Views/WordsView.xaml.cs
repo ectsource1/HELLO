@@ -49,6 +49,23 @@ namespace SpeechWords.Views
             model.SelectedText2 = MyDialog.SelectedText;
         }
 
+        private void SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            WordsViewModel model = (WordsViewModel)this.DataContext;
+            model.SelectedText2 = MyDialog.SelectedText;
+        }
+
+        private void SelectionVChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            WordsViewModel model = (WordsViewModel)this.DataContext;
+            model.SelectedText2 = MyVocab.SelectedText;
+        }
+
+        private void IsVisibleChanged1(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            WordsViewModel model = (WordsViewModel)this.DataContext;
+            model.changeVisible();
+        }
 
     }
 }

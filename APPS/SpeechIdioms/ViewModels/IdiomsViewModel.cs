@@ -106,6 +106,7 @@ namespace SpeechIdioms.ViewModels
 
             repeatOptions = new List<int>
             {
+                3,
                 5,
                 10,
                 15,
@@ -184,6 +185,7 @@ namespace SpeechIdioms.ViewModels
                 {
                     this.RepeatCnt = 0;
                     RepeatSelected = false;
+                    this.SpeakClickable = true;
                 }
             }
 
@@ -739,7 +741,7 @@ namespace SpeechIdioms.ViewModels
 
             voice.Volume = volume;
             voice.Rate = Rate - 10;
-            voice.SpeakAsync(selectedText);
+            voice.SpeakAsync(tmp);
         }
 
         private void Pause()
@@ -761,13 +763,21 @@ namespace SpeechIdioms.ViewModels
         private void Stop()
         {
             voice.SpeakAsyncCancelAll();
-            DialogIdx = 1000;
+            if (dialogIsChecked)
+                DialogIdx = 1000;
+
             Message = "Stopped";
             this.PreClickable = true;
             this.NextClickable = true;
             this.StopClickable = false;
             this.SpeakClickable = true;
             this.ResumeClickable = false;
+        }
+
+        public void changeVisible()
+        {
+            repeatCnt = 1000;
+            Stop();
         }
 
         private void Pre()

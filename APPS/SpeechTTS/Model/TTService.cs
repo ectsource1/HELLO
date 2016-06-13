@@ -62,6 +62,7 @@ namespace SpeechTTS.Model
         private string _appDataRoot  = "";
         private string _userDataRoot = "";
         private string _userAudioRoot = "";
+        private string _userDefaultRoot = "";
 
         public TTService()
         {
@@ -73,42 +74,58 @@ namespace SpeechTTS.Model
                 Directory.CreateDirectory(_userDataRoot);
             }
 
+            _userDefaultRoot = _userDataRoot + @"ECT\";
+            if (!Directory.Exists(_userDefaultRoot))
+            {
+                Directory.CreateDirectory(_userDefaultRoot);
+            }
+
             _userAudioRoot = _userDataRoot + @"\ECTAudio\";
             if (!Directory.Exists(_userAudioRoot))
             {
                 Directory.CreateDirectory(_userAudioRoot);
             }
 
-
             // setup application default files
             _appDataRoot = AppDomain.CurrentDomain.BaseDirectory + "DataFiles\\";
             string personPath = _appDataRoot + Personal.PERSON_BIN;
             string studentId = "";
             string studentName = "";
+            bool editable = false;
             if (File.Exists(personPath))
             {
                 Personal person = Personal.read(personPath);
                 studentId = person.StudentId;
                 studentName = person.StudentName;
+                editable = person.Editable;
             }
 
             // Cartoons documents
+            numCarts = 1;
             this.cardsDocuments = new List<TextDocument>();
             string _path = _appDataRoot + "Cartoons\\";
             TextDocument doc = new TextDocument();
-            doc.Editable = false;
+            doc.Editable = editable;
             doc.FileName = _path + "LM.cartoon";
             doc.Subject = "The Lion and The Mouse";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.cardsDocuments.Add(doc);
-            numCarts = 1;
+
+            doc = new TextDocument();
+            doc.Editable = editable;
+            doc.FileName = _path + "2Goose.cartoon";
+            doc.Subject = "The Goose that laid the golden eggs";
+            doc.StudentId = studentId;
+            doc.From = studentName;
+            this.cardsDocuments.Add(doc);
+
 
             // Class documents
             this.activitiesDocuments = new List<TextDocument>();
             _path = _appDataRoot + "Classes\\";
             doc = new TextDocument();
-            doc.Editable = false;
+            doc.Editable = editable;
             doc.FileName = _path + "classsample.class";
             doc.Subject = "The Body Parts";
             doc.StudentId = studentId;
@@ -117,22 +134,39 @@ namespace SpeechTTS.Model
             numClasses = 1;
 
             // Idiom documents
+            numIdioms = 3;
             this.idiomsDocuments = new List<TextDocument>();
             _path = _appDataRoot + "Idioms\\";
             doc = new TextDocument();
-            doc.Editable = false;
+            doc.Editable = editable;
             doc.FileName = _path + "idiomsample.idiom";
-            doc.Subject = "15 Commom Idioms";
+            doc.Subject = "1-10 Commom Idioms";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.idiomsDocuments.Add(doc);
-            numIdioms = 1;
+
+            doc = new TextDocument();
+            doc.Editable = editable;
+            doc.FileName = _path + "idiomsample2.idiom";
+            doc.Subject = "11-20 Commom Idioms";
+            doc.StudentId = studentId;
+            doc.From = studentName;
+            this.idiomsDocuments.Add(doc);
+
+            doc = new TextDocument();
+            doc.Editable = editable;
+            doc.FileName = _path + "idiomsample3.idiom";
+            doc.Subject = "21-30 Commom Idioms";
+            doc.StudentId = studentId;
+            doc.From = studentName;
+            this.idiomsDocuments.Add(doc);
+
 
             // pronunciation documents
             this.soundDocuments = new List<TextDocument>();
             _path = _appDataRoot + "Sounds\\";
             doc = new TextDocument();
-            doc.Editable = false;
+            doc.Editable = editable;
             doc.FileName = _path + "aeiou.sound";
             doc.Subject = "Vowel Sounds";
             doc.StudentId = studentId;
@@ -144,7 +178,7 @@ namespace SpeechTTS.Model
             this.grammarDocuments = new List<TextDocument>();
             _path = _appDataRoot + "Grammars\\";
             doc = new TextDocument();
-            doc.Editable = false;
+            doc.Editable = editable;
             doc.FileName = _path + "singular.grammar";
             doc.Subject = "Singular and Plurals";
             doc.StudentId = studentId;
@@ -152,7 +186,7 @@ namespace SpeechTTS.Model
             this.grammarDocuments.Add(doc);
 
             doc = new TextDocument();
-            doc.Editable = false;
+            doc.Editable = editable;
             doc.FileName = _path + "countNouns.grammar";
             doc.Subject = "Count and Non-Count Nouns";
             doc.StudentId = studentId;
@@ -162,21 +196,70 @@ namespace SpeechTTS.Model
 
             // Notes documents
             this.funDocuments = new List<TextDocument>(); 
-            _path = _appDataRoot + "Notes\\";
-            numNotes = 8;
+            string fileName = _userDefaultRoot + "myVocab.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\myVocab.notes";
+            }
+
+            numNotes = 10;
             // 1 ok
             doc = new TextDocument();
-            doc.Editable = false;
-            doc.FileName = _path + "myVocab.notes";
-            doc.Subject = "Minimum Vocaburary (2600) 英语听说读写最基本词汇";
+            doc.Editable = editable;
+            doc.FileName = fileName;
+            doc.Subject = "Minimum Vocaburary (2600) 英语听说最基本词汇";
+            doc.StudentId = studentId;
+            doc.From = studentName;
+            this.funDocuments.Add(doc);
+
+            doc = new TextDocument();
+            fileName = _userDefaultRoot + "sentences1.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\sentences1.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
+            doc.Subject = "Commonly Used Phrases 英语听说最常用短语 Part-I";
+            doc.StudentId = studentId;
+            doc.From = studentName;
+            this.funDocuments.Add(doc);
+
+            doc = new TextDocument();
+            fileName = _userDefaultRoot + "sentences2.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\sentences2.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
+            doc.Subject = "Commonly Used Phrases 英语听说最常用短语 Part-2";
+            doc.StudentId = studentId;
+            doc.From = studentName;
+            this.funDocuments.Add(doc);
+
+            doc = new TextDocument();
+            fileName = _userDefaultRoot + "sentences3.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\sentences3.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
+            doc.Subject = "Commonly Used Phrases 英语听说最常用短语 Part-3";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
             // 3 ok
             doc = new TextDocument();
-            doc.Editable = false;
-            doc.FileName = _path + "irregularVerb.notes";
+            fileName = _userDefaultRoot + "irregularVerb.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\irregularVerb.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
             doc.Subject = "Irregular Verb 常用不规则动词";
             doc.StudentId = studentId;
             doc.From = studentName;
@@ -184,57 +267,79 @@ namespace SpeechTTS.Model
 
             // ok
             doc = new TextDocument();
-            doc.Editable = false;
-            doc.FileName = _path + "plurals.notes";
+            fileName = _userDefaultRoot + "plurals.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\plurals.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
             doc.Subject = "Plural Nouns 常用不规则名词复数";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
             doc = new TextDocument();
-            doc.Editable = false;
-            doc.FileName = _path + "synonyms.notes";
+            fileName = _userDefaultRoot + "synonyms.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\synonyms.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
             doc.Subject = "Synonyms 常用近义词";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
             doc = new TextDocument();
-            doc.Editable = false;
-            doc.FileName = _path + "antonyms.notes";
+            fileName = _userDefaultRoot + "antonyms.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\antonyms.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
             doc.Subject = "Antonyms 常用反义词";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
-            doc = new TextDocument();
-            doc.Editable = false;
-            doc.FileName = _path + "soundHard.notes";
-            doc.Subject = "Words that are hard to pronounce correctly 难发音的单词";
-            doc.StudentId = studentId;
-            doc.From = studentName;
-            this.funDocuments.Add(doc);
-
-            doc = new TextDocument();
-            doc.Editable = false;
-            doc.FileName = _path + "soundClose.notes";
-            doc.Subject = "Words that have close sounds 发音接近的单词";
-            doc.StudentId = studentId;
-            doc.From = studentName;
-            this.funDocuments.Add(doc);
-
             // ok
             doc = new TextDocument();
-            doc.Editable = false;
-            doc.FileName = _path + "famous.notes";
+            fileName = _userDefaultRoot + "famous.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\famous.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
             doc.Subject = "Famous Epigram 警句名言";
             doc.StudentId = studentId;
             doc.From = studentName;
             this.funDocuments.Add(doc);
 
+            doc = new TextDocument();
+            fileName = _userDefaultRoot + "soundHard.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\soundHard.notes";
+            }
+            doc.Editable = editable;
+            doc.FileName = fileName;
+            doc.Subject = "Words that are hard to pronounce correctly 难发音的单词";
+            doc.StudentId = studentId;
+            doc.From = studentName;
+            this.funDocuments.Add(doc);   
+
             // ok
             doc = new TextDocument();
-            doc.FileName = _path + "sample.notes";
+            fileName = _userDefaultRoot + "sample.notes";
+            if (!File.Exists(fileName))
+            {
+                fileName = _appDataRoot + "Notes\\sample.notes";
+            }
+            doc.FileName = fileName;
             doc.Subject = "My Notes 我的英文笔记";
             doc.StudentId = studentId;
             doc.From = studentName;
@@ -495,34 +600,6 @@ namespace SpeechTTS.Model
         public TextDocument GetFunDocument(Guid id)
         {
             return getDocument(id, this.funDocuments, STORY);
-            /*
-            TextDocument doc = this.funDocuments.FirstOrDefault(e => e.Id == id);
-
-            if (string.IsNullOrEmpty(doc.Text) ) {
-               try
-               {
-                   using (StreamReader sr = new StreamReader(doc.FileName))
-                   {
-                       
-                        if (doc.FileName.ToUpper().Contains(STORY))
-                        {
-                            string line;
-                            while ( (line = sr.ReadLine()) != null )
-                            {
-                                if (!line.Contains(TITLE_KEY))
-                                    doc.Text += line + "\n";
-                            }
-                        }
-                   }
-               }
-               catch (Exception e)
-               {
-                   Console.WriteLine("The file could not be read:");
-                   Console.WriteLine(e.Message);
-                }
-            }
-
-            return doc;*/
         }
 
         

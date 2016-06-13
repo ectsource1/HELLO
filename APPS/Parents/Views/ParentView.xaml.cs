@@ -32,5 +32,23 @@ namespace Parents.Views
             ParentViewModel model = (ParentViewModel)this.DataContext;
             model.SelectedText = Dialog30.SelectedText;
         }
+
+        private void Selection20Changed(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ParentViewModel model = (ParentViewModel)this.DataContext;
+            model.SelectedText = Dialog20.SelectedText;
+        }
+
+        private void Selection30Changed(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ParentViewModel model = (ParentViewModel)this.DataContext;
+            model.SelectedText = Dialog30.SelectedText;
+        }
+
+        private void IsVisbleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            ParentViewModel model = (ParentViewModel)this.DataContext;
+            model.changeVisible();
+        }
     }
 }

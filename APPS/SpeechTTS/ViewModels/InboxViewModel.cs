@@ -264,9 +264,9 @@ namespace SpeechTTS.ViewModels
             intro0 += "ECT wants you to be sucessfull in speaking fluent English!\n";
             intro0 += "Lets work together to achieve what you want to be !!\n";
             intro0 += "You need to login before you use this software.\n";
-            intro0 += "Please send Charlie or Andy a message if you don't have your login account yet!";
+            //intro0 += "Please send Charlie or Andy a message if you don't have your login account yet!";
 
-            intro1 = "Looked like you still not logged in yet.\n";
+            intro1 = "Looks like you still not logged in yet.\n";
             intro1 += "Did you forgot your username and password?\n";
             intro1 += "Ask your dad or Mom whether they know your account or not?\n";
             intro1 += "Then try one more time!\n";

@@ -78,7 +78,7 @@ namespace SpeechWords.ViewModels
 
         
         FsRichTextBox fsRichTextBox;
-        private bool audioReady = false;
+        private bool audioReady;
         MediaElement audio;
         Image image;
 
@@ -108,10 +108,12 @@ namespace SpeechWords.ViewModels
 
             repeatOptions = new List<int>
             {
+                3,
                 5,
                 10,
                 15,
-                20
+                20,
+                50
             };
 
             fontSizeOptions = new List<int>
@@ -130,6 +132,7 @@ namespace SpeechWords.ViewModels
             voice.SpeakCompleted += OnSpeakCompleted;
             voice.SpeakProgress += OnWord;
 
+            audioReady = false;
             selectedText = "";
             selectedText2 = "";
         }
@@ -174,6 +177,7 @@ namespace SpeechWords.ViewModels
                 {
                     this.RepeatCnt = 0;
                     RepeatSelected = false;
+                    this.SpeakClickable = true;
                 }
             }
 
@@ -768,7 +772,7 @@ namespace SpeechWords.ViewModels
 
             voice.Volume = volume;
             voice.Rate = Rate - 10;
-            voice.SpeakAsync(selectedText);
+            voice.SpeakAsync(tmp);
         }
 
         private void Pause()
@@ -791,13 +795,21 @@ namespace SpeechWords.ViewModels
         {
             voice.SpeakAsyncCancelAll();
 
-            DialogIdx = 1000;
+            if (dialogIsChecked)
+                DialogIdx = 1000;
 
             this.PreClickable = true;
             this.NextClickable = true;
             this.StopClickable = false;
             this.SpeakClickable = true;
             this.ResumeClickable = false;
+        }
+
+        public void changeVisible()
+        {
+            repeatCnt = 1000;
+            Stop();
+            if (audioReady ) audio.Stop();
         }
 
         private void Pre()

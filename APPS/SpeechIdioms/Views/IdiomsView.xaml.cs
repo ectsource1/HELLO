@@ -39,5 +39,17 @@ namespace SpeechIdioms.Views
             IdiomsViewModel model = (IdiomsViewModel)this.DataContext;
             model.SelectedText2 = MyDialog.SelectedText;
         }
+
+        private void SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            IdiomsViewModel model = (IdiomsViewModel)this.DataContext;
+            model.SelectedText2 = MyDialog.SelectedText;
+        }
+
+        private void IsVisibleChanged1(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            IdiomsViewModel model = (IdiomsViewModel)this.DataContext;
+            model.changeVisible();
+        }
     }
 }

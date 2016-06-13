@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using StudentInfo.ViewModels;
 using System.Security.Permissions;
+using System.Windows.Input;
 
 namespace StudentInfo.Views
 {
@@ -15,6 +16,19 @@ namespace StudentInfo.Views
         public StudentView()
         {
             InitializeComponent();
+            this.KeyDown += new KeyEventHandler(keyDownEventHandler);
+        }
+
+        private void keyDownEventHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.E && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                StudentViewModel vmodel = (StudentViewModel)this.DataContext;
+                if (vmodel.CheckVisible)
+                    vmodel.CheckVisible = false;
+                else
+                    vmodel.CheckVisible = true;
+            }
         }
 
         [Import]

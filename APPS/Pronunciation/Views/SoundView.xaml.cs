@@ -54,5 +54,11 @@ namespace Pronunciation.Views
             model.MaxTime = ts.TotalSeconds;
             timer.Start();
         }
+
+        private void IsVisibleChanged1(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            SoundViewModel model = (SoundViewModel)this.DataContext;
+            model.changeVisible();
+        }
     }
 }

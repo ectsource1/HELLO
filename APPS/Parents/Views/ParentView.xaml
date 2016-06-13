@@ -6,7 +6,7 @@
     xmlns:infra="clr-namespace:SpeechInfrastructure;assembly=SpeechInfrastructure" 
     x:Class="Parents.Views.ParentView"
     mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="400" >
+    d:DesignHeight="300" d:DesignWidth="400" IsVisibleChanged="IsVisbleChanged" >
     <UserControl.Resources>
         <infra:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
@@ -49,10 +49,10 @@
                 <TextBox TextWrapping="Wrap" IsReadOnly="True" Text="{Binding Readme, Mode=OneWay}" />
             </GroupBox>
             <GroupBox Header="家长英语20句"  Margin="5,10,5,0" Visibility="{Binding Dialog1IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
-                <TextBox Text="{Binding Dialog1, Mode=OneWay}" MouseDoubleClick="MouseDbClick20" IsReadOnly="True" x:Name="Dialog20"/>
+                <TextBox Text="{Binding Dialog1, Mode=OneWay}" MouseDoubleClick="MouseDbClick20" IsReadOnly="True" x:Name="Dialog20" SelectionChanged="Selection20Changed"/>
             </GroupBox>
             <GroupBox Header="家长英语+30句"  Margin="5,10,5,0" Visibility="{Binding Dialog2IsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
-                <TextBox Text="{Binding Dialog2, Mode=OneWay}" MouseDoubleClick="MouseDbClick30" IsReadOnly="True" x:Name="Dialog30"/>
+                <TextBox Text="{Binding Dialog2, Mode=OneWay}" MouseDoubleClick="MouseDbClick30" IsReadOnly="True" x:Name="Dialog30" SelectionChanged="Selection30Changed"/>
             </GroupBox>
             <GroupBox Header="家长英语详解"  Margin="5,10,5,0" Visibility="{Binding TranslateIsChecked, Converter={StaticResource booleanToVisibilityConverter}}">
                 <TextBox Text="{Binding Translate, Mode=OneWay}" IsReadOnly="True" />

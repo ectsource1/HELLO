@@ -18,8 +18,6 @@ namespace StudentInfo.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class StudentViewModel : BindableBase, INavigationAware
     {
-       
-
         private readonly DelegateCommand saveCommand;
 
         private List<string> sexOptions;
@@ -28,6 +26,7 @@ namespace StudentInfo.ViewModels
         private string selectedHobby = "Drawing";
         private string message = "";
         private Personal personData;
+        private bool checkVisible = false;
 
         [ImportingConstructor]
         public StudentViewModel()
@@ -124,6 +123,19 @@ namespace StudentInfo.ViewModels
             set
             {
                 this.SetProperty(ref this.selectedSex, value);
+            }
+        }
+
+        public bool CheckVisible
+        {
+            get
+            {
+                return this.checkVisible;
+            }
+
+            set
+            {
+                this.SetProperty(ref this.checkVisible, value);
             }
         }
 

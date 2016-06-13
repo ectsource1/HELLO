@@ -256,6 +256,13 @@ namespace Parents.ViewModels
             this.ResumeClickable = false;
         }
 
+        public void changeVisible()
+        {
+            if (dialogIdx != 0) {
+                Stop();
+            }
+        }
+         
         public List<string> VoiceOptions
         {
             get
@@ -997,13 +1004,18 @@ namespace Parents.ViewModels
 
             int cnt = genderList.Count;
 
-            dialog1 = genderList[0] + ": " + sentenceList[0] + "\n";
+            string hstr = "Hello My Friend, Welcome to ECT English School!\n";
+            hstr += "ECT wants you to be sucessfull in speaking fluent English!\n";
+            hstr += "Lets work together to achieve what you want to be !!\n";
+            hstr += "You need to login before you use this software.\n\n";
+
+            dialog1 = hstr  + genderList[0] + ": " + sentenceList[0] + "\n";
             for (int i = 1; i < at20; i++)
             {
                 dialog1 += genderList[i] + ": " + sentenceList[i] + "\n";
             }
 
-            dialog2 = genderList[at20] + ": " + sentenceList[at20] + "\n";
+            dialog2 = hstr + genderList[at20] + ": " + sentenceList[at20] + "\n";
             for (int i = at20 + 1; i < cnt; i++)
             {
                 dialog2 += genderList[i] + ": " + sentenceList[i] + "\n";

@@ -66,5 +66,23 @@ namespace SpeechVideos.Views
             VideosViewModel model = (VideosViewModel)this.DataContext;
             model.SelectedText2 = MyDialog.SelectedText;
         }
+
+        private void SelectionChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            VideosViewModel model = (VideosViewModel)this.DataContext;
+            model.SelectedText2 = MyDialog.SelectedText;
+        }
+
+        private void SelectionVChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            VideosViewModel model = (VideosViewModel)this.DataContext;
+            model.SelectedText2 = MyVocab.SelectedText;
+        }
+
+        private void IsVisibleChanged1(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            VideosViewModel model = (VideosViewModel)this.DataContext;
+            model.changeVisible();
+        }
     }
 }

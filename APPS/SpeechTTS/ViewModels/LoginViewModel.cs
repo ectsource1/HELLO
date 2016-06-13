@@ -32,6 +32,8 @@ namespace SpeechTTS.ViewModels
         private string _status;
         private bool notLogin = true;
         private string numForced = "";
+        private int numLogin = 0;
+        private int totalSeconds;
 
         [ImportingConstructor]
         public LoginViewModel(IAuthenticationService authService)
@@ -222,6 +224,24 @@ namespace SpeechTTS.ViewModels
 
         private void Login(object control)
         {
+            if (numLogin == 0 && !forced)
+            {
+                totalSeconds = (int)DateTime.Now.Subtract(new DateTime(2016, 1, 1, 0, 0, 0)).TotalSeconds;
+            }
+            else if (numLogin < 15 && !forced)
+            {
+                int curr = (int)DateTime.Now.Subtract(new DateTime(2016, 1, 1, 0, 0, 0)).TotalSeconds;
+                if ((curr - totalSeconds) < 90)
+                {
+                    numLogin += 1;
+                    return;
+                }
+                
+            }
+            
+
+            numLogin = 1;
+
             Status = "";
             NotLogin = false;
             PasswordBox passwordBox = control as PasswordBox;
@@ -289,7 +309,7 @@ namespace SpeechTTS.ViewModels
                 }
 
                 setIdentity(user);
-
+                numLogin = 0;
                 updateOffline(true);
             }
             catch (UnauthorizedAccessException)

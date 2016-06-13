@@ -51,6 +51,8 @@ namespace SpeechInfrastructure
 
         public DateTime LoginDate { get; set; }
 
+        public bool Editable { get; set; }
+
         public bool validate(int inputDays, int allow)
         {
             bool ret = false;

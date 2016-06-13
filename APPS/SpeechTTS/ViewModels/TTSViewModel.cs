@@ -4,6 +4,7 @@ using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.Regions;
 using System;
 using System.IO;
+using System.Windows.Markup;
 using System.Windows.Forms;
 using System.Speech.Synthesis;
 using System.Collections.Generic;
@@ -83,7 +84,7 @@ namespace SpeechTTS.ViewModels
         private List<int> repeatOptions;
         private int repeat = 5;
         private int repeatCnt = 0;
-        private int fontSize = 16;
+        private int fontSize = 14;
 
         private Boolean aVisible = false;
         private Boolean bVisible = false;
@@ -1614,6 +1615,12 @@ namespace SpeechTTS.ViewModels
             this.ResumeClickable = false;
         }
 
+        public void changeVisible()
+        {
+            repeatCnt = 1000;
+            Stop();
+        }
+
         private void Update()
         {
             Stop();
@@ -1635,6 +1642,7 @@ namespace SpeechTTS.ViewModels
             
             File.WriteAllText(textDocument.FileName, txt);
         }
+
 
         private void SaveAs()
         {
@@ -1667,6 +1675,7 @@ namespace SpeechTTS.ViewModels
 
         string PlainText()
         {
+            //return editBox.To;
             return editBox.GetPlainText();
         }
 

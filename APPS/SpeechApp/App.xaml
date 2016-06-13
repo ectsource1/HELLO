@@ -4,9 +4,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Theme/Styles.xaml" />
                 <ResourceDictionary Source="Theme/Theme.xaml" />
-                <ResourceDictionary Source="/SpeechControls;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="Theme/Styles.xaml" />  
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

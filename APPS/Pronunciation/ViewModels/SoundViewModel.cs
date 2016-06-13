@@ -737,13 +737,18 @@ namespace Pronunciation.ViewModels
         private void Stop()
         {
             voice.SpeakAsyncCancelAll();
-            //audio.Stop();
 
             this.PreClickable = true;
             this.NextClickable = true;
             this.StopClickable = false;
             this.SpeakClickable = true;
             this.ResumeClickable = false;
+        }
+
+        public void changeVisible()
+        {
+            media.Stop();
+            Stop();   
         }
 
         private void PlayMedia()
