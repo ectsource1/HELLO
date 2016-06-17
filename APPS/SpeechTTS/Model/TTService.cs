@@ -1128,12 +1128,17 @@ namespace SpeechTTS.Model
                 }
             }
 
-            string txt = "";
+            string txt = "", subsub="";
             if (doc.TxtList.Count > 0)
+            {
                 txt = doc.TxtList[0];
+                subsub = doc.SubjectList[0];
+            }
+                
 
             doc.Idx = 0;
             doc.Text = txt;
+            doc.SubSubject = subsub;
 
             return doc;
         }

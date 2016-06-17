@@ -44,8 +44,8 @@ namespace SpeechWords.ViewModels
         private int volume = 100;
         private int rate = 10;
 
-        private bool preClickable = false;
-        private bool nextClickable = false;
+        private bool preClickable = true;
+        private bool nextClickable = true;
 
         private bool speakClickable = true;
         private bool stopClickable = false;
@@ -676,11 +676,10 @@ namespace SpeechWords.ViewModels
 
         private void Speak()
         {
+            Stop();
             SelectedText = "";
             SelectedText2 = "";
             wordSpeak = false;
-            this.PreClickable = false;
-            this.NextClickable = false;
             this.StopClickable = true;
             this.ResumeClickable = false;
             this.SpeakClickable = false;
@@ -743,7 +742,6 @@ namespace SpeechWords.ViewModels
 
         private void SpeakWord()
         {
-
             RepeatSelected = true;
             string tmp = selectedText;
             if (notTranscript) tmp = selectedText2;
@@ -752,8 +750,6 @@ namespace SpeechWords.ViewModels
             if (repeat == 0) Repeat = 1;
 
             wordSpeak = true;
-            this.PreClickable = false;
-            this.NextClickable = false;
             this.StopClickable = false;
             this.ResumeClickable = false;
             this.SpeakClickable = false;
@@ -814,13 +810,14 @@ namespace SpeechWords.ViewModels
 
         private void Pre()
         {
+            Stop();
             TranscriptIsChecked = true;
             TextDocument tmp = (TextDocument)this.TextDocument.Clone();
             if (tmp.Idx > 0 )
             {
                 tmp.Idx -= 1;
                 tmp.Text = tmp.TxtList[tmp.Idx];
-
+                tmp.SubSubject = tmp.SubjectList[tmp.Idx];
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\") + 1);
                 string imgName = tmp.ImgList[tmp.Idx];
                 if ( !imgName.Contains("\\"))
@@ -862,6 +859,7 @@ namespace SpeechWords.ViewModels
 
         private void Next()
         {
+            Stop();
             TranscriptIsChecked = true;
             TextDocument tmp = (TextDocument)this.TextDocument.Clone();
             int cnt = tmp.TxtList.Count;
@@ -871,6 +869,7 @@ namespace SpeechWords.ViewModels
                 if (tmp.Idx >= cnt) tmp.Idx = 0;
 
                 tmp.Text = tmp.TxtList[tmp.Idx];
+                tmp.SubSubject = tmp.SubjectList[tmp.Idx];
                 string folderName = tmp.FileName.Substring(0, tmp.FileName.LastIndexOf(@"\")+1);
 
                 string imgName = tmp.ImgList[tmp.Idx];
